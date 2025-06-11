@@ -1,7 +1,21 @@
+"use client"
+
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { useState } from "react";
 
 export default function Display() {
+  type LoanObject = {
+    name: string, 
+    sumLoan: number, 
+    key: number
+  }
+
+  const [loans, setLoans] = useState<LoanObject[]>([
+    {name: "やすの", sumLoan: 1500, key: 1}, 
+    {name: "Astalum", sumLoan: 1300, key: 2}, 
+    {name: "こまつさん", sumLoan: 20300, key: 3}
+  ])
 
   return (
     <div className="flex flex-col w-full items-center justify-center">
@@ -10,26 +24,16 @@ export default function Display() {
       </div>
 
       <div className="w-full flex flex-col justify-center items-center gap-4">
-        <Card className="w-3/4">
-          <CardContent className="">
-            <div>やすの</div>
-            <div className="flex justify-end text-4xl">¥ 1,500</div>
-          </CardContent>
-        </Card>
-
-        <Card className="w-3/4">
-          <CardContent className="">
-            <div>Astalum</div>
-            <div className="flex justify-end text-4xl">¥ 1,300</div>
-          </CardContent>
-        </Card>
-
-        <Card className="w-3/4">
-          <CardContent className="">
-            <div>こまつさん</div>
-            <div className="flex justify-end text-4xl">¥ 20,300</div>
-          </CardContent>
-        </Card>
+        {loans.map((loan) => {
+          return (
+            <Card className="w-3/4" key={loan.key}>
+              <CardContent>
+                <div>{loan.name}</div>
+                <div className="flex justify-end text-4xl">¥ {loan.sumLoan.toLocaleString()}</div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       </div>

@@ -26,7 +26,7 @@ export default function Display() {
       <div className="w-full flex flex-col justify-center items-center gap-4">
         {loans.map((loan) => {
           return (
-            <Card className="w-3/4" key={loan.key}>
+            <Card className="w-3/4 rounded-3xl" key={loan.key}>
               <CardContent>
                 <div>{loan.name}</div>
                 <div className="flex justify-end text-4xl">¥ {loan.sumLoan.toLocaleString()}</div>
@@ -36,6 +36,6 @@ export default function Display() {
         })}
       </div>
 
-      </div>
+    </div>
   );
 }

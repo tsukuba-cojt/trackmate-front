@@ -1,3 +1,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+:root {
+    --color-theme: #87cefa;
+    --color-subtheme: #00bfff;
+    --color-text: #333333;
+    --color-focus: #1a1a1a;
+    --color-unfocus: #c0c0c0;
+}

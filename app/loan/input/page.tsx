@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import { useForm } from "react-hook-form"
-import { toast } from "sonner"
 import { z } from "zod"
 
 import { cn } from "@/lib/utils"
@@ -41,6 +40,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import DebtRentToggleButton from "@/components/DebtRentToggleButton";
 
 const formSchema = z.object({
   person: z.string().min(1, {
@@ -61,26 +61,13 @@ type nameItem = {
 }
 
 export default function InputPage() {
+  const buttonStyle: string = "border-black text-2xl font-bold border-1 px-12 py-6";
   const router = useRouter();
 
-  const [isSelectedLend, setIsLend] = useState<boolean>(true);
-
-  const handleLendButtonClick = () => {
-    if (!isSelectedLend) setIsLend(!isSelectedLend);
-  }
-  const handleRentButtonClick = () => {
-    if (isSelectedLend) setIsLend(!isSelectedLend);
-  }
   const handleRegisterButtonClick = () => {
     const redirectTo: string = "/loan/register";
     router.push(redirectTo);
   }
-
-  const buttonStyle: string = "border-black text-2xl font-bold border-1 px-12 py-6";
-  const selectedButtonStyle: string = buttonStyle + " bg-gray-100";
-  const unselectedButtonStyle: string = buttonStyle;
-  const lendButtonStyle: string= isSelectedLend? selectedButtonStyle: unselectedButtonStyle;
-  const rentButtonStyle: string = !isSelectedLend? selectedButtonStyle: unselectedButtonStyle;
 
   const [selectedNames, setSelectedNamse] = useState<nameItem[]>([
     {id: 1, name: "やすの"}, {id: 2, name: "Astalum"}, {id: 3, name: "こまつさん"}
@@ -107,22 +94,7 @@ export default function InputPage() {
         貸し / 借り
       </div>
 
-      <div className="flex gap-6">
-        <Button 
-          variant="outline" 
-          className={lendButtonStyle}
-          onClick={() => handleLendButtonClick()}
-        >
-          貸し
-        </Button>
-        <Button 
-          variant="outline" 
-          className={rentButtonStyle}
-          onClick={() => handleRentButtonClick()}
-        >
-          借り
-        </Button>
-      </div>
+      <DebtRentToggleButton></DebtRentToggleButton>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-4/5">

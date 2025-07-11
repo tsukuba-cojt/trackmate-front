@@ -155,7 +155,7 @@ export default function InputPage() {
                 )}
               />
 
-              <Button variant={"outline"} className="border-gray-400 font-bold self-start" size={"sm"} onClick={() => handleRegisterButtonClick()}>編集</Button>
+              <Button variant={"outline"} className="border-gray-400 font-bold self-start" size={"sm"} onClick={() => handleRegisterButtonClick()} type="button">編集</Button>
 
               <p className="font-bold self-start">日付</p>
 
@@ -171,12 +171,12 @@ export default function InputPage() {
                           <Button
                             variant={"outline"}
                             className={cn(
-                              "w-full pl-3 text-left font-normal",
+                              "w-full pl-3 text-left font-normal self-center",
                               !field.value && "text-muted-foreground"
                             )}
                           >
                             {field.value ? (
-                              format(field.value, "PPP")
+                              format(field.value, "yyyy年 M月 d日")
                             ) : (
                               <span></span>
                             )}

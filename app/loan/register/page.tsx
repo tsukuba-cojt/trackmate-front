@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
 import TransitionButton from "@/components/transition";
 import { useRouter } from "next/navigation";
+import PersonInputFrom from "@/components/PersonInputForm";
 
 type Person = {
   id: string, 
@@ -48,19 +49,11 @@ export default function Register() {
       </div>
 
       <div className="flex flex-col grow items-center gap-4 w-3/4 m-15">
-        <div className="flex w-full h-12 bg-white rounded-2xl items-center relative border border-dashed border-black">
-          <button 
-            className="w-8 h-8 bg-green-400 text-lg text-white font-semibold rounded-full absolute left-4" 
-            onClick={() => handleClickAddButton()}
-          >
-            ＋
-          </button>
-          <Input 
-            className="flex-grow text-center font-bold text-lg outline-none border-none h-full px-12"
-            placeholder="名前を入力"
-            onChange={(e) => handleChange(e)}
-          />
-        </div>
+        <PersonInputFrom 
+        newPersonName={newPersonName}
+        onNameChange={handleChange}
+        onAddClick={handleClickAddButton}
+        ></PersonInputFrom>
 
         {
           persons.map((person: Person) => {
@@ -69,8 +62,8 @@ export default function Register() {
               key={person.id}
               className="flex w-full h-12 bg-gray-300 rounded-2xl items-center relative">
                 <button 
-                  className="w-8 h-8 bg-red-400 text-lg text-white font-semibold rounded-full absolute left-4"
-                  onClick={() => handleClickDeleteButton()}
+                className="w-8 h-8 bg-red-400 text-lg text-white font-semibold rounded-full absolute left-4"
+                onClick={() => handleClickDeleteButton()}
                 >
                   ー
                 </button>

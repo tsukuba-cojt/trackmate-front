@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import TransitionButton from "@/components/transition";
 import { useRouter } from "next/navigation";
 import PersonInputFrom from "@/components/PersonInputForm";
+import PersonListItem from "@/components/PersonListItem";
 
 type Person = {
   id: string, 
@@ -31,7 +32,7 @@ export default function Register() {
   }
 
   const handleClickDeleteButton = () => {
-
+    
   }
 
   const handleClickAddButton = () => {
@@ -56,23 +57,15 @@ export default function Register() {
         ></PersonInputFrom>
 
         {
-          persons.map((person: Person) => {
-            return (
-              <div 
+          persons.map((person: Person) => 
+            (
+              <PersonListItem
               key={person.id}
-              className="flex w-full h-12 bg-gray-300 rounded-2xl items-center relative">
-                <button 
-                className="w-8 h-8 bg-red-400 text-lg text-white font-semibold rounded-full absolute left-4"
-                onClick={() => handleClickDeleteButton()}
-                >
-                  ー
-                </button>
-                <p className="flex-grow text-center font-bold text-lg px-12">
-                  {person.name}
-                </p>
-              </div>
-            );
-          })
+              person={person}
+              onDelete={handleClickDeleteButton}
+              ></PersonListItem>
+            )
+          )
         }
       </div>
       <Button variant="outline" className={buttonStyle} onClick={() => handleClickBackButton()}>

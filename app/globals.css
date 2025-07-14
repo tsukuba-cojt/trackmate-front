@@ -1,6 +1,17 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@theme{
+    --color-theme-100: oklch(0.8206 0.0945 236.75); 
+    --color-theme-200: oklch(0.7554 0.1534 231.64);
+    --color-text-0: oklch(0.3211 0 0);
+    --color-focus-100: oklch(0.2178 0 0);
+    --color-focus-200: oklch(0.8078 0 0);
+}
+
+/* @import "tailwindcss";
+@import "tw-animate-css";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -45,8 +56,6 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -76,6 +85,8 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
 }
 
 .dark {
@@ -119,4 +130,4 @@
   body {
     @apply bg-background text-foreground;
   }
-}
+} */

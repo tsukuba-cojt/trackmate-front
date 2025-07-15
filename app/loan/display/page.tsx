@@ -1,8 +1,7 @@
 "use client"
 
-import { Button } from "@/components/ui/button";
+import Switcher from "@/components/switcher";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Car } from "lucide-react";
 import { useState } from "react";
 
 type LoanObject = {
@@ -44,12 +43,20 @@ export default function Display() {
         貸し / 借り
       </div>
 
+      <Switcher
+      leftText="表示"
+      leftLink="/loan/display"
+      rightText="入力"
+      rightLink="/loan/input"
+      focus="left"
+      ></Switcher>
+
       <div className="flex w-full flex-col justify-center items-center gap-4">
         {loans.map((loan) => {
           // 合計金額を表示
           return (
             <Card 
-              className="w-3/4 rounded-3xl py-6"
+              className="w-4/5 rounded-3xl py-6"
               key={loan.key}
               onClick={() => handleCardClick(loan.key)}
             >
@@ -59,7 +66,7 @@ export default function Display() {
                   <p className={loan.isDebt? "pl-2 font-bold text-2xl text-green-400": "pl-2 font-bold text-2xl text-red-400"}>
                     {loan.isDebt? '貸し': '借り'}
                   </p>
-                  <p className=" text-4xl">¥ {loan.sumLoan.toLocaleString()}</p>
+                  <p className=" text-3xl">¥ {loan.sumLoan.toLocaleString()}</p>
                 </div>
               </CardContent>
             </Card>

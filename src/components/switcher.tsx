@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 
@@ -7,13 +8,14 @@ type Props = {
     rightText: string;
     rightLink: string;
     focus: "left" | "right";
+    className?: string
 };
 
-const Switcher = ({ leftText, leftLink, rightText, rightLink, focus }: Props) => {
+const Switcher = ({ leftText, leftLink, rightText, rightLink, focus, className }: Props) => {
     const router = useRouter();
     
     return(
-    <div className="w-3/4 px-8 py-10">
+    <div className={cn("w-3/4", className)}>
         <Button
         variant={focus === "left" ? "ghost" : "link"}
         className={`w-1/2 border-b-2 ${focus === "left" ? "border-focus-100 text-focus-100" : "border-focus-200 text-focus-200"} shadow-none rounded-none mb-4 font-bold text-xl`}

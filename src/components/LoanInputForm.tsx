@@ -1,7 +1,7 @@
 "use client"
 
 import { useForm } from "react-hook-form"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -40,6 +40,9 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 
+type Props = {
+  isSelectedLend: boolean
+}
 
 type nameItem = {
   id: number
@@ -56,9 +59,10 @@ const formSchema = z.object({
   amount: z.coerce.number({
     message: "数字を入力してください"
   }).min(1, { message: "金額を入力してください" }),
+  isSelectedLend: z.boolean()
 })
 
-export default function LoanInputForm() {
+export default function LoanInputForm({isSelectedLend}: Props) {
   const router = useRouter();
 
   const [selectedNames, setSelectedNamse] = useState<nameItem[]>([
@@ -71,13 +75,13 @@ export default function LoanInputForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       person: "", 
-      amount: undefined
+      amount: 1,
+      dob: new Date(),
+      isSelectedLend: isSelectedLend
     },
   })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     console.log("heelo");
     console.log(values)
   }
@@ -86,6 +90,10 @@ export default function LoanInputForm() {
     const redirectTo: string = "/loan/register";
     router.push(redirectTo);
   }
+
+  useEffect(() => {
+    form.setValue("isSelectedLend", isSelectedLend);
+  }, [isSelectedLend, form])
 
   return (
     <Form {...form}>

@@ -26,7 +26,7 @@ export default function InputPage() {
       className="mb-15"
       ></DebtRentToggleButton>
       <LoanInputForm
-      
+      isSelectedLend={isSelectedLend}
       ></LoanInputForm>
     </div>
   );

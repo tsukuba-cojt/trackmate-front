@@ -19,7 +19,7 @@ export default function Register() {
 
   const [newPersonName, setNewPersonName] = useState<string>("");
 
-  const buttonStyle: string = "border-black text-2xl font-bold border-1 px-12 py-6 mb-20";
+  const buttonStyle: string = "border-black text-2xl font-bold border-1 px-12 py-6 mb-20 bg-white";
 
   const [persons, setPersons] = useState<Person[]>([
     {id: "1", name: "やす"}, 
@@ -44,7 +44,7 @@ export default function Register() {
   }
 
   return (
-    <div className="flex flex-col w-full min-h-screen items-center justify-center">
+    <div className="flex flex-col w-full min-h-screen items-center justify-center bg-theme-50">
       <div className="text-2xl font-bold mt-10">
         貸した・借りた人編集
       </div>

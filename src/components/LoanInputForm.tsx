@@ -98,7 +98,7 @@ export default function LoanInputForm({isSelectedLend}: Props) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-4/5">
-        <div className="flex flex-col items-center w-full gap-10">
+        <div className="flex flex-col items-center w-full gap-16">
           <div className="grid grid-cols-[1fr_3fr_1fr] place-items-center gap-2">
             <p className="font-bold self-start">人</p>
 
@@ -110,8 +110,8 @@ export default function LoanInputForm({isSelectedLend}: Props) {
                 <FormItem className="w-full min-h-16">
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="" />
+                      <SelectTrigger className="w-full bg-white">
+                        <SelectValue placeholder=""/>
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -182,7 +182,7 @@ export default function LoanInputForm({isSelectedLend}: Props) {
               render={({ field }) => (
                 <FormItem className="min-h-16">
                   <FormControl>
-                    <Input placeholder="" {...field} />
+                    <Input placeholder="" {...field} className="bg-white"/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

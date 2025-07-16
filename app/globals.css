@@ -3,6 +3,18 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@theme {
+  --color-theme-100: oklch(0.8206 0.0945 236.75);
+  /* theme */
+  --color-theme-200: oklch(0.7554 0.1534 231.64);
+  /* subtheme */
+  --color-text-0: oklch(0.3211 0 0);
+  --color-focus-100: oklch(0.2178 0 0);
+  /* focused */
+  --color-focus-200: oklch(0.8078 0 0);
+  /* unfocused */
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -114,6 +126,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }

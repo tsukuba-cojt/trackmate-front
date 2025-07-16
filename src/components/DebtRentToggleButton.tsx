@@ -2,11 +2,15 @@
 
 import { useState } from "react";
 import { Button } from "./ui/button";
+import { cn } from "@/lib/utils"
 
+type Props = {
+  isSelectedLend: boolean,
+  setIsSelectedLend: (newLendState: boolean) => void,
+  className?: string
+}
 
-export default function DebtRentToggleButton() {
-  const [isSelectedLend, setIsLend] = useState<boolean>(true);
-
+export default function DebtRentToggleButton({isSelectedLend, setIsSelectedLend, className}: Props) {
   const buttonStyle: string = "border-black text-2xl font-bold border-1 px-12 py-6";
   const selectedButtonStyle: string = buttonStyle + " bg-gray-100";
   const unselectedButtonStyle: string = buttonStyle;
@@ -14,14 +18,14 @@ export default function DebtRentToggleButton() {
   const rentButtonStyle: string = !isSelectedLend? selectedButtonStyle: unselectedButtonStyle;
 
   const handleLendButtonClick = () => {
-    if (!isSelectedLend) setIsLend(!isSelectedLend);
+    if (!isSelectedLend) setIsSelectedLend(!isSelectedLend);
   }
   const handleRentButtonClick = () => {
-    if (isSelectedLend) setIsLend(!isSelectedLend);
+    if (isSelectedLend) setIsSelectedLend(!isSelectedLend);
   }
 
   return (
-    <div className="flex gap-6">
+    <div className={cn("flex gap-6", className)}>
       <Button 
         variant="outline" 
         className={lendButtonStyle}

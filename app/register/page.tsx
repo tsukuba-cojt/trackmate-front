@@ -3,7 +3,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import TransitionButton from "@/components/transition";
 
-const LoginPage = () => {
+const RegisterPage = () => {
     const router = useRouter();
     return (
         <div className="flex items-center justify-center h-screen bg-theme-100">
@@ -14,7 +14,7 @@ const LoginPage = () => {
                         leftLink="/login"
                         rightText="会員登録"
                         rightLink="/register"
-                        focus="left"
+                        focus="right"
                     />
                 </div>
                 <form>
@@ -54,4 +54,4 @@ const LoginPage = () => {
     );
 }
 
-export default LoginPage;
+export default RegisterPage;

@@ -12,7 +12,7 @@ type Props = {
 
 export default function DebtRentToggleButton({isSelectedLend, setIsSelectedLend, className}: Props) {
   const buttonStyle: string = "border-black text-2xl font-bold border-1 px-12 py-6";
-  const selectedButtonStyle: string = buttonStyle + " bg-gray-100";
+  const selectedButtonStyle: string = buttonStyle + " ring-2 bg-gray-200";
   const unselectedButtonStyle: string = buttonStyle;
   const lendButtonStyle: string= isSelectedLend? selectedButtonStyle: unselectedButtonStyle;
   const rentButtonStyle: string = !isSelectedLend? selectedButtonStyle: unselectedButtonStyle;

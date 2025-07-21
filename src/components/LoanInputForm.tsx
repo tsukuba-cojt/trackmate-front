@@ -3,6 +3,7 @@
 import { useForm } from "react-hook-form"
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import useSWR from 'swr';
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
@@ -13,6 +14,8 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input"
 import { Calendar } from "@/components/ui/calendar"
+
+import {v4 as uuidv4} from "uuid"
 
 import {
   Select,
@@ -39,13 +42,19 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { UUID } from "crypto";
 
 type Props = {
   isSelectedLend: boolean
 }
 
+type apiPerson = {
+  person_id: string,
+  person_name: string
+}
+
 type nameItem = {
-  id: number
+  id: string,
   name: string, 
 }
 
@@ -62,12 +71,49 @@ const formSchema = z.object({
   isSelectedLend: z.boolean()
 })
 
+const fetchPerson = async (url: string) => {
+  const token = process.env.NEXT_PUBLIC_TOKEN;
+
+  const res = await fetch(url, {
+    method: "GET", 
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    }
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json(); 
+    throw new Error(errorData.message || 'Failed to fetch person data');
+  }
+
+  const resJSON = res.json();
+
+  return resJSON;
+}
+
 export default function LoanInputForm({isSelectedLend}: Props) {
   const router = useRouter();
 
+  const {data: responsePerson, error, isLoading} = useSWR<apiPerson[]>(process.env.NEXT_PUBLIC_BASE_API_URL + "person", fetchPerson);
+
   const [selectedNames, setSelectedNamse] = useState<nameItem[]>([
-    {id: 1, name: "やすの"}, {id: 2, name: "Astalum"}, {id: 3, name: "こまつさん"}
+    {id: uuidv4(), name: "やすの"}, {id: uuidv4(), name: "Astalum"}, {id: uuidv4(), name: "こまつさん"}
   ]);
+
+  useEffect(() => {
+    if (responsePerson && responsePerson.data){
+      console.log(responsePerson)
+      const newSelectedNames = responsePerson.data.map((apiPersonItem: apiPerson) => {
+        return ({
+          id: apiPersonItem.person_id, 
+          name: apiPersonItem.person_name
+        }
+        );
+      })
+      setSelectedNamse(newSelectedNames);
+    }
+  }, [responsePerson, error])
 
   const buttonStyle: string = "border-black text-2xl font-bold border-1 px-12 py-6";
 
@@ -82,7 +128,6 @@ export default function LoanInputForm({isSelectedLend}: Props) {
   })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("heelo");
     console.log(values)
   }
 

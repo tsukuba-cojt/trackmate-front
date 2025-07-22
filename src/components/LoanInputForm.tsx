@@ -8,7 +8,7 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
 
-import { CalendarIcon } from "lucide-react"
+import { AlignVerticalDistributeStart, CalendarIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 import { Button } from "@/components/ui/button";
@@ -58,17 +58,24 @@ type nameItem = {
   name: string, 
 }
 
+type LoanItem = {
+  person: string,
+  is_debt: boolean, 
+  date: Date,
+  amount: number
+}
+
 const formSchema = z.object({
   person: z.string().min(1, {
     message: "人を入力してください",
   }).max(50),
-  dob: z.date({
+  date: z.date({
     required_error: "日付を入力してください",
   }),
   amount: z.coerce.number({
     message: "数字を入力してください"
   }).min(1, { message: "金額を入力してください" }),
-  isSelectedLend: z.boolean()
+  is_debt: z.boolean()
 })
 
 const fetchPerson = async (url: string) => {
@@ -87,9 +94,53 @@ const fetchPerson = async (url: string) => {
     throw new Error(errorData.message || 'Failed to fetch person data');
   }
 
-  const resJSON = res.json();
+  return res.json();
+}
 
-  return resJSON;
+const postLoan = async (newLoan: LoanItem, selectedNames: nameItem[]) => {
+  const token = process.env.NEXT_PUBLIC_TOKEN;
+  const url = process.env.NEXT_PUBLIC_BASE_API_URL + "loan";
+
+  let personId: string | undefined;
+  const foundPerson = selectedNames.find((selectedName) => selectedName.name === newLoan.person);
+  if (foundPerson) {
+    personId = foundPerson.id;
+  } else {
+    console.warn(`"${newLoan.person}" に一致する人物が見つかりませんでした。`);
+
+    throw new Error(`Person with name "${newLoan.person}" not found.`);
+  }
+
+  const year = newLoan.date.getFullYear();
+  const month = (newLoan.date.getMonth() + 1).toString().padStart(2, '0'); // 月は0から始まるため+1し、2桁にする
+  const day = newLoan.date.getDate().toString().padStart(2, '0');       // 日を2桁にする
+  const formattedDate = `${year}-${month}-${day}`;
+
+  const apiBody = {
+    person_id: personId, 
+    is_debt: newLoan.is_debt, 
+    date: formattedDate, 
+    amount: newLoan.amount
+  }
+
+  const res = await fetch(url, {
+    "method": "POST", 
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    }, 
+    "body": JSON.stringify(apiBody)
+  })
+
+  if (!res.ok) {
+    let errorDetail: any;
+    try {
+      errorDetail = await res.json();
+    } catch (e) {
+      errorDetail = { message: res.statusText || 'An unknown error occurred' };
+    }
+    throw new Error(errorDetail.message || `Failed to create loan: ${res.status}`);
+  }
 }
 
 export default function LoanInputForm({isSelectedLend}: Props) {
@@ -122,13 +173,13 @@ export default function LoanInputForm({isSelectedLend}: Props) {
     defaultValues: {
       person: "", 
       amount: 1,
-      dob: new Date(),
-      isSelectedLend: isSelectedLend
+      date: new Date(),
+      is_debt: isSelectedLend
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    await postLoan(values, selectedNames);
   }
 
   const handleRegisterButtonClick = () => {
@@ -137,7 +188,7 @@ export default function LoanInputForm({isSelectedLend}: Props) {
   }
 
   useEffect(() => {
-    form.setValue("isSelectedLend", isSelectedLend);
+    form.setValue("is_debt", isSelectedLend);
   }, [isSelectedLend, form])
 
   return (
@@ -179,7 +230,7 @@ export default function LoanInputForm({isSelectedLend}: Props) {
             {/* カレンダーから日付を選択 */}
             <FormField
               control={form.control}
-              name="dob"
+              name="date"
               render={({ field }) => (
                 <FormItem className="flex flex-col w-full col-span-2 min-h-16">
                   <Popover>

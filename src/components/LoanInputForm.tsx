@@ -196,7 +196,7 @@ export default function LoanInputForm({isSelectedLend}: Props) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-4/5">
         <div className="flex flex-col items-center w-full gap-16">
           <div className="grid grid-cols-[1fr_3fr_1fr] place-items-center gap-2">
-            <p className="font-bold self-start">人</p>
+            <p className="font-bold self-start">相手</p>
 
             {/* 人を選択するselectタグ */}
             <FormField

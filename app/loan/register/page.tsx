@@ -20,6 +20,26 @@ type Person = {
   name: string
 }
 
+// TODO: status codeによって挙動を変える
+const postPerson = async (newName: string) => {
+  const token = process.env.NEXT_PUBLIC_TOKEN;
+  const url = process.env.NEXT_PUBLIC_BASE_API_URL + "person"
+
+  const res = await fetch(url, {
+    method: "POST", 
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+    body: JSON.stringify({person_name: newName})
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json(); 
+    throw new Error(errorData.message || 'Failed to fetch person data');
+  }
+}
+
 export default function Register() {
   const router = useRouter();
 
@@ -53,12 +73,11 @@ export default function Register() {
     setNewPersonName(e.target.value);
   }
 
-  const handleClickDeleteButton = () => {
-    
+  const handleClickDeleteButton = async () => {
   }
 
-  const handleClickAddButton = () => {
-
+  const handleClickAddButton = async (newPersonName: string) => {
+    await postPerson(newPersonName);
   }
 
   const handleClickBackButton = () => {

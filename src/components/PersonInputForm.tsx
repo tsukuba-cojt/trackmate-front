@@ -4,7 +4,7 @@ import { Input } from "./ui/input";
 type Props = {
   newPersonName: string, 
   onNameChange: (e: ChangeEvent<HTMLInputElement>) => void,
-  onAddClick: () => void
+  onAddClick: (newName: string) => void
 }
 
 export default function PersonInputFrom({
@@ -16,7 +16,7 @@ export default function PersonInputFrom({
     <div className="flex w-full h-12 bg-white rounded-2xl items-center relative border border-dashed border-black">
       <button 
         className="w-8 h-8 bg-green-400 text-lg text-white font-semibold rounded-full absolute left-4" 
-        onClick={() => onAddClick()}
+        onClick={() => onAddClick(newPersonName)}
       >
         ＋
       </button>

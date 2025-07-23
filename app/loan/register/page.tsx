@@ -1,6 +1,6 @@
 "use client"
 
-import { ChangeEvent, SetStateAction, useState } from "react";
+import { ChangeEvent, SetStateAction, useEffect, useState } from "react";
 
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,12 @@ import TransitionButton from "@/components/transition";
 import { useRouter } from "next/navigation";
 import PersonInputFrom from "@/components/PersonInputForm";
 import PersonListItem from "@/components/PersonListItem";
+import usePerson from "@/hooks/usePerson";
+
+type apiPerson = {
+  person_id: string,
+  person_name: string
+}
 
 type Person = {
   id: string, 
@@ -21,11 +27,27 @@ export default function Register() {
 
   const buttonStyle: string = "border-black text-2xl font-bold border-1 px-12 py-6 mb-20 bg-white";
 
+  const { responsePerson, error, isLoading } = usePerson();
+
   const [persons, setPersons] = useState<Person[]>([
-    {id: "1", name: "やす"}, 
-    {id: "2", name: "やすの"}, 
-    {id: "3", name: "小松さん"}, 
+    // {id: "1", name: "やす"}, 
+    // {id: "2", name: "やすの"},
+    // {id: "3", name: "小松さん"}, 
   ])
+
+  useEffect(() => {
+    if (responsePerson && responsePerson.data) {
+      const newPersons = responsePerson.data.map((responsePersonItem: apiPerson) => {
+        return (
+          {
+            id: responsePersonItem.person_id, 
+            name: responsePersonItem.person_name
+          }
+        )
+      });
+      setPersons(newPersons);
+    }
+  }, [responsePerson, error])
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setNewPersonName(e.target.value);

@@ -25,11 +25,12 @@ const fetchPerson = async (url: string) => {
 }
 
 export default function usePerson() {
-  const {data: responsePerson, error, isLoading} = useSWR<apiPerson[]>(process.env.NEXT_PUBLIC_BASE_API_URL + "person", fetchPerson);
+  const {data: responsePerson, error, isLoading, mutate} = useSWR<apiPerson[]>(process.env.NEXT_PUBLIC_BASE_API_URL + "person", fetchPerson);
 
   return {
     responsePerson, 
     error, 
-    isLoading
+    isLoading,
+    mutatePersons: mutate // mutate 関数を外に公開
   }
 }

@@ -5,7 +5,7 @@ type Person = {
 
 type Props = {
   person: Person, 
-  onDelete: () => void
+  onDelete: (deletedPersonId: string) => void
 }
 
 export default function PersonListItem({
@@ -17,7 +17,7 @@ export default function PersonListItem({
     className="flex w-full h-12 bg-gray-300 rounded-2xl items-center relative">
       <button 
       className="w-8 h-8 bg-red-400 text-lg text-white font-semibold rounded-full absolute left-4"
-      onClick={() => onDelete()}
+      onClick={() => onDelete(person.id)}
       >
         ー
       </button>

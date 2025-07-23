@@ -40,6 +40,25 @@ const postPerson = async (newName: string) => {
   }
 }
 
+const deletePorson = async (deletedPersonId: string) => {
+  const token = process.env.NEXT_PUBLIC_TOKEN;
+  const url = process.env.NEXT_PUBLIC_BASE_API_URL + "person"
+
+  const res = await fetch(url, {
+    method: "DELETE", 
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+    body: JSON.stringify({person_id: deletedPersonId})
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json(); 
+    throw new Error(errorData.message || 'Failed to fetch person data');
+  }
+}
+
 export default function Register() {
   const router = useRouter();
 
@@ -47,13 +66,9 @@ export default function Register() {
 
   const buttonStyle: string = "border-black text-2xl font-bold border-1 px-12 py-6 mb-20 bg-white";
 
-  const { responsePerson, error, isLoading } = usePerson();
+  const { responsePerson, error, isLoading, mutatePersons } = usePerson();
 
-  const [persons, setPersons] = useState<Person[]>([
-    // {id: "1", name: "やす"}, 
-    // {id: "2", name: "やすの"},
-    // {id: "3", name: "小松さん"}, 
-  ])
+  const [persons, setPersons] = useState<Person[]>([])
 
   useEffect(() => {
     if (responsePerson && responsePerson.data) {
@@ -73,15 +88,18 @@ export default function Register() {
     setNewPersonName(e.target.value);
   }
 
-  const handleClickDeleteButton = async () => {
+  const handleClickDeleteButton = async (deletedPersonId: string) => {
+    await deletePorson(deletedPersonId);
+    mutatePersons();
   }
 
   const handleClickAddButton = async (newPersonName: string) => {
     await postPerson(newPersonName);
+    mutatePersons();
   }
 
   const handleClickBackButton = () => {
-
+    
   }
 
   return (

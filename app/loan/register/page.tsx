@@ -10,6 +10,8 @@ import PersonInputFrom from "@/components/PersonInputForm";
 import PersonListItem from "@/components/PersonListItem";
 import usePerson from "@/hooks/usePerson";
 import { HttpError } from "@/uitls/HttpError";
+import ErrorPage from "@/components/errorPage";
+import { stat } from "fs";
 
 type apiPerson = {
   person_id: string,
@@ -21,7 +23,6 @@ type Person = {
   name: string
 }
 
-// TODO: status codeによって挙動を変える
 const postPerson = async (newName: string) => {
   const token = process.env.NEXT_PUBLIC_TOKEN;
   const url = process.env.NEXT_PUBLIC_BASE_API_URL + "person"
@@ -64,6 +65,8 @@ export default function Register() {
   const router = useRouter();
 
   const [newPersonName, setNewPersonName] = useState<string>("");
+  const [persons, setPersons] = useState<Person[]>([]);
+  const [displayErrorPage, setDisplayErrorPage] = useState<{statusCode: number, message: string} | null>(null);
 
   const buttonStyle: string = "border-black text-2xl font-bold border-1 px-12 py-6 mb-20 bg-white";
 
@@ -75,22 +78,10 @@ export default function Register() {
         router.push("/");
       }
       if (error.statusCode === 500) {
-        return (
-          <div>
-            <p>
-              {error.statusCode}
-              
-            </p>
-            <p>
-              しばらくしてから接続してください
-            </p>
-          </div>
-        )
+        setDisplayErrorPage({statusCode: error.statusCode, message: "もう一度接続してください"});
       }
     }
   }
-
-  const [persons, setPersons] = useState<Person[]>([])
 
   useEffect(() => {
     if (responsePerson && responsePerson.data) {
@@ -116,17 +107,62 @@ export default function Register() {
       mutatePersons();
     } 
     catch {
-      
+      if (error.statusCode === 401 || error.statusCode === 403) {
+        router.push("/");
+        return;
+      }
+      let statusCode: number;
+      let errorMessage: string;
+      if (error.statusCode === 400 || error.statusCode === 500) {
+        statusCode = error.statusCode;
+        errorMessage = "もう一度接続してください"
+        setDisplayErrorPage({statusCode: statusCode, message: errorMessage})
+      } else if (error.statusCode === 404) {
+        // 削除する相手が見つからなかった時の挙動
+      } else if (error.statusCode == 409) {
+        // TODO: 削除する相手とまだ貸し借りが残っている場合の挙動
+      } else {
+        setDisplayErrorPage({statusCode: error.statusCode, message: error.message})
+      }
     }
   }
 
   const handleClickAddButton = async (newPersonName: string) => {
-    await postPerson(newPersonName);
-    mutatePersons();
+    try{
+      await postPerson(newPersonName);
+      mutatePersons();
+    }
+    catch {
+      if (error.statusCode === 401 || error.statusCode === 403) {
+        router.push("/");
+        return;
+      }
+      let statusCode: number;
+      let errorMessage: string;
+      if (error.statusCode === 400 || error.statusCode === 500) {
+        statusCode = error.statusCode;
+        errorMessage = "もう一度接続してください"
+        setDisplayErrorPage({statusCode: statusCode, message: errorMessage})
+      } else if (error.statusCode === 409) {
+        // TODO 重複している時のpopup画面表示
+      } else {
+        setDisplayErrorPage({statusCode: error.statusCode, message: error.message})
+      }
+    }
   }
 
   const handleClickBackButton = () => {
     
+  }
+
+  if (displayErrorPage) {
+    return (
+      <ErrorPage
+      statusCode={displayErrorPage.statusCode} 
+      errorMessage={displayErrorPage.message}
+      >
+      </ErrorPage>
+    )
   }
 
   if (!isLoading && !error) return (

@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import PersonInputFrom from "@/components/PersonInputForm";
 import PersonListItem from "@/components/PersonListItem";
 import usePerson from "@/hooks/usePerson";
+import { HttpError } from "@/uitls/HttpError";
 
 type apiPerson = {
   person_id: string,
@@ -68,6 +69,27 @@ export default function Register() {
 
   const { responsePerson, error, isLoading, mutatePersons } = usePerson();
 
+  if (error) {
+    if (error instanceof HttpError) {
+      if (error.statusCode === 401 || error.statusCode === 403) {
+        router.push("/");
+      }
+      if (error.statusCode === 500) {
+        return (
+          <div>
+            <p>
+              {error.statusCode}
+              
+            </p>
+            <p>
+              しばらくしてから接続してください
+            </p>
+          </div>
+        )
+      }
+    }
+  }
+
   const [persons, setPersons] = useState<Person[]>([])
 
   useEffect(() => {
@@ -89,8 +111,13 @@ export default function Register() {
   }
 
   const handleClickDeleteButton = async (deletedPersonId: string) => {
-    await deletePorson(deletedPersonId);
-    mutatePersons();
+    try {
+      await deletePorson(deletedPersonId);
+      mutatePersons();
+    } 
+    catch {
+      
+    }
   }
 
   const handleClickAddButton = async (newPersonName: string) => {
@@ -102,7 +129,7 @@ export default function Register() {
     
   }
 
-  return (
+  if (!isLoading && !error) return (
     <div className="flex flex-col w-full min-h-screen items-center justify-center bg-theme-50">
       <div className="text-2xl font-bold mt-10">
         貸した・借りた人編集

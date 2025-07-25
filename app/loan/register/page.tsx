@@ -14,6 +14,7 @@ import ErrorPage from "@/components/errorPage";
 import { stat } from "fs";
 import { PopUpComponent } from "@/components/popUpComponent";
 import useDialog from "@/hooks/useDialog";
+import useErrorPage from "@/hooks/useErrorPage";
 
 type apiPerson = {
   person_id: string,
@@ -70,10 +71,8 @@ export default function Register() {
   const [newPersonName, setNewPersonName] = useState<string>("");
   const [persons, setPersons] = useState<Person[]>([]);
 
-  // eroorページ用のコンポーネント
-  const [displayErrorPage, setDisplayErrorPage] = useState<{statusCode: number, message: string} | null>(null);
-
-  // ダイアログに関するstate
+  // error用のhooks
+  const {displayErrorPage, showErrorPage} = useErrorPage();
   const {dialogProps, openDialog} = useDialog();
 
   // 貸し借り相手の取得
@@ -84,7 +83,7 @@ export default function Register() {
         router.push("/");
       }
       if (error.statusCode === 500) {
-        setDisplayErrorPage({statusCode: error.statusCode, message: "もう一度接続してください"});
+        showErrorPage(error.statusCode, "もう一度接続してください");
       }
     }
   }
@@ -115,28 +114,25 @@ export default function Register() {
       mutatePersons();
     } 
     catch(error: any) {
-      if (error.statusCode === 401 || error.statusCode === 403) {
-        router.push("/");
-        return;
-      }
-      let statusCode: number;
-      let errorMessage: string;
-      if (error.statusCode === 400 || error.statusCode === 500) {
-        statusCode = error.statusCode;
-        errorMessage = "もう一度接続してください"
-        setDisplayErrorPage({statusCode: statusCode, message: errorMessage})
-      } else if (error.statusCode === 404) {
-        openDialog(
-          `${deletedPersonName}は見つかりません`, 
-          "/注意のアイコン.svg"
-        )
-      } else if (error.statusCode == 409) {
-        openDialog(
-          `${deletedPersonName}との貸し借りが精算されていないので，${deletedPersonName}の削除ができません`, 
-          "/注意のアイコン.svg"
-        )
+      if (error instanceof HttpError) {
+        if (error.statusCode === 401 || error.statusCode === 403) {
+          router.push("/");
+          return;
+        }
+        if (error.statusCode === 400 || error.statusCode === 500) {
+          showErrorPage(error.statusCode, "もう一度接続してください")
+        } else if (error.statusCode === 404) {
+          openDialog(`${deletedPersonName}は見つかりません`, "/注意のアイコン.svg")
+        } else if (error.statusCode == 409) {
+          openDialog(
+            `${deletedPersonName}との貸し借りが精算されていないので，${deletedPersonName}の削除ができません`, 
+            "/注意のアイコン.svg"
+          )
+        } else {
+          showErrorPage(error.statusCode, error.message)
+        }
       } else {
-        setDisplayErrorPage({statusCode: error.statusCode, message: error.message})
+        showErrorPage(500, "予期せぬエラーが発生しました");
       }
     }
   }
@@ -147,23 +143,23 @@ export default function Register() {
       mutatePersons();
     }
     catch(error: any) {
-      if (error.statusCode === 401 || error.statusCode === 403) {
-        router.push("/");
-        return;
-      }
-      let statusCode: number;
-      let errorMessage: string;
-      if (error.statusCode === 400 || error.statusCode === 500) {
-        statusCode = error.statusCode;
-        errorMessage = "もう一度接続してください"
-        setDisplayErrorPage({statusCode: statusCode, message: errorMessage})
-      } else if (error.statusCode === 409) {
-        openDialog(
-          `${newPersonName}は既に存在しています`, 
-          "/注意のアイコン.svg"
-        )
+      if (error instanceof HttpError) {
+        if (error.statusCode === 401 || error.statusCode === 403) {
+          router.push("/");
+          return;
+        }
+        if (error.statusCode === 400 || error.statusCode === 500) {
+          showErrorPage(error.statusCode, "もう一度接続してください")
+        } else if (error.statusCode === 409) {
+          openDialog(
+            `${newPersonName}は既に存在しています`, 
+            "/注意のアイコン.svg"
+          )
+        } else {
+          showErrorPage(error.statusCode, error.message)
+        }
       } else {
-        setDisplayErrorPage({statusCode: error.statusCode, message: error.message})
+        showErrorPage(500, "予期せぬエラーが発生しました");
       }
     }
   }
@@ -183,7 +179,6 @@ export default function Register() {
   }
 
   const buttonStyle: string = "border-black text-2xl font-bold border-1 px-12 py-6 mb-20 bg-white";
-
   if (!isLoading && !error) return (
     <div className="flex flex-col w-full min-h-screen items-center justify-center bg-theme-50">
       <div className="text-2xl font-bold mt-10">

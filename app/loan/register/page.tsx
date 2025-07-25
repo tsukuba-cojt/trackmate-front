@@ -2,16 +2,13 @@
 
 import { ChangeEvent, SetStateAction, useEffect, useState } from "react";
 
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
-import TransitionButton from "@/components/transition";
 import { useRouter } from "next/navigation";
 import PersonInputFrom from "@/components/PersonInputForm";
 import PersonListItem from "@/components/PersonListItem";
 import usePerson from "@/hooks/usePerson";
 import { HttpError } from "@/uitls/HttpError";
 import ErrorPage from "@/components/errorPage";
-import { stat } from "fs";
 import { PopUpComponent } from "@/components/popUpComponent";
 import useDialog from "@/hooks/useDialog";
 import useErrorPage from "@/hooks/useErrorPage";

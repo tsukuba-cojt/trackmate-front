@@ -12,6 +12,7 @@ import usePerson from "@/hooks/usePerson";
 import { HttpError } from "@/uitls/HttpError";
 import ErrorPage from "@/components/errorPage";
 import { stat } from "fs";
+import { PopUpComponent } from "@/components/popUpComponent";
 
 type apiPerson = {
   person_id: string,
@@ -38,7 +39,7 @@ const postPerson = async (newName: string) => {
 
   if (!res.ok) {
     const errorData = await res.json(); 
-    throw new Error(errorData.message || 'Failed to fetch person data');
+    throw new HttpError(errorData.message, res.status);
   }
 }
 
@@ -57,7 +58,8 @@ const deletePorson = async (deletedPersonId: string) => {
 
   if (!res.ok) {
     const errorData = await res.json(); 
-    throw new Error(errorData.message || 'Failed to fetch person data');
+    console.log(res.status);
+    throw new HttpError(errorData.message, res.status);
   }
 }
 
@@ -68,9 +70,21 @@ export default function Register() {
   const [persons, setPersons] = useState<Person[]>([]);
   const [displayErrorPage, setDisplayErrorPage] = useState<{statusCode: number, message: string} | null>(null);
 
+  // ダイアログに関するstate
+  const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
+  const [currentErrorMessage, setCurrentErrorMessage] = useState<string>("");
+  const [currentImgPath, setCurrentImgPath] = useState<string>("");
+
+  // 貸し借り相手の取得
+  const { responsePerson, error, isLoading, mutatePersons } = usePerson();
+
   const buttonStyle: string = "border-black text-2xl font-bold border-1 px-12 py-6 mb-20 bg-white";
 
-  const { responsePerson, error, isLoading, mutatePersons } = usePerson();
+  const handleDialog = (currentErrorMessage: string, currentImgPath: string) =>  {
+    setShowErrorDialog(true);
+    setCurrentErrorMessage(currentErrorMessage);
+    setCurrentImgPath(currentImgPath);
+  }
 
   if (error) {
     if (error instanceof HttpError) {
@@ -102,11 +116,13 @@ export default function Register() {
   }
 
   const handleClickDeleteButton = async (deletedPersonId: string) => {
+    const deletedPersonName = persons.find((person) => person.id === deletedPersonId)?.name;
+
     try {
       await deletePorson(deletedPersonId);
       mutatePersons();
     } 
-    catch {
+    catch(error: any) {
       if (error.statusCode === 401 || error.statusCode === 403) {
         router.push("/");
         return;
@@ -119,8 +135,16 @@ export default function Register() {
         setDisplayErrorPage({statusCode: statusCode, message: errorMessage})
       } else if (error.statusCode === 404) {
         // 削除する相手が見つからなかった時の挙動
+        handleDialog(
+          `${deletedPersonName}は見つかりません`, 
+          "/注意のアイコン.svg"
+        )
       } else if (error.statusCode == 409) {
         // TODO: 削除する相手とまだ貸し借りが残っている場合の挙動
+        handleDialog(
+          `${deletedPersonName}との貸し借りが精算されていないので，${deletedPersonName}の削除ができません`, 
+          "/注意のアイコン.svg"
+        )
       } else {
         setDisplayErrorPage({statusCode: error.statusCode, message: error.message})
       }
@@ -193,6 +217,12 @@ export default function Register() {
       <Button variant="outline" className={buttonStyle} onClick={() => handleClickBackButton()}>
         戻る
       </Button>
+
+      <PopUpComponent isOpen={showErrorDialog}
+      onClose={() => setShowErrorDialog(false)} 
+      errorMessage={currentErrorMessage} 
+      imgPath={currentImgPath}>
+      </PopUpComponent>
     </div>
   );
 }

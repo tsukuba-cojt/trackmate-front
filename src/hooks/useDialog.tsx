@@ -6,7 +6,7 @@ type UseDialogReturn = {
   dialogProps: {
     isOpen: boolean;
     onClose: () => void;
-    errorMessage: React.ReactNode;
+    errorMessage: string;
     imgPath: string;
   };
   openDialog: (message: string, imagePath: string) => void;

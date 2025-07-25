@@ -68,24 +68,22 @@ export default function Register() {
 
   const [newPersonName, setNewPersonName] = useState<string>("");
   const [persons, setPersons] = useState<Person[]>([]);
+
+  // eroorページ用のコンポーネント
   const [displayErrorPage, setDisplayErrorPage] = useState<{statusCode: number, message: string} | null>(null);
 
   // ダイアログに関するstate
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
   const [currentErrorMessage, setCurrentErrorMessage] = useState<string>("");
   const [currentImgPath, setCurrentImgPath] = useState<string>("");
-
-  // 貸し借り相手の取得
-  const { responsePerson, error, isLoading, mutatePersons } = usePerson();
-
-  const buttonStyle: string = "border-black text-2xl font-bold border-1 px-12 py-6 mb-20 bg-white";
-
   const handleDialog = (currentErrorMessage: string, currentImgPath: string) =>  {
     setShowErrorDialog(true);
     setCurrentErrorMessage(currentErrorMessage);
     setCurrentImgPath(currentImgPath);
   }
 
+  // 貸し借り相手の取得
+  const { responsePerson, error, isLoading, mutatePersons } = usePerson();
   if (error) {
     if (error instanceof HttpError) {
       if (error.statusCode === 401 || error.statusCode === 403) {
@@ -134,13 +132,11 @@ export default function Register() {
         errorMessage = "もう一度接続してください"
         setDisplayErrorPage({statusCode: statusCode, message: errorMessage})
       } else if (error.statusCode === 404) {
-        // 削除する相手が見つからなかった時の挙動
         handleDialog(
           `${deletedPersonName}は見つかりません`, 
           "/注意のアイコン.svg"
         )
       } else if (error.statusCode == 409) {
-        // TODO: 削除する相手とまだ貸し借りが残っている場合の挙動
         handleDialog(
           `${deletedPersonName}との貸し借りが精算されていないので，${deletedPersonName}の削除ができません`, 
           "/注意のアイコン.svg"
@@ -156,7 +152,7 @@ export default function Register() {
       await postPerson(newPersonName);
       mutatePersons();
     }
-    catch {
+    catch(error: any) {
       if (error.statusCode === 401 || error.statusCode === 403) {
         router.push("/");
         return;
@@ -168,7 +164,10 @@ export default function Register() {
         errorMessage = "もう一度接続してください"
         setDisplayErrorPage({statusCode: statusCode, message: errorMessage})
       } else if (error.statusCode === 409) {
-        // TODO 重複している時のpopup画面表示
+        handleDialog(
+          `${newPersonName}は既に存在しています`, 
+          "/注意のアイコン.svg"
+        )
       } else {
         setDisplayErrorPage({statusCode: error.statusCode, message: error.message})
       }
@@ -176,7 +175,7 @@ export default function Register() {
   }
 
   const handleClickBackButton = () => {
-    
+    router.back();
   }
 
   if (displayErrorPage) {
@@ -188,6 +187,8 @@ export default function Register() {
       </ErrorPage>
     )
   }
+
+  const buttonStyle: string = "border-black text-2xl font-bold border-1 px-12 py-6 mb-20 bg-white";
 
   if (!isLoading && !error) return (
     <div className="flex flex-col w-full min-h-screen items-center justify-center bg-theme-50">

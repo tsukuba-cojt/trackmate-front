@@ -13,6 +13,7 @@ import { HttpError } from "@/uitls/HttpError";
 import ErrorPage from "@/components/errorPage";
 import { stat } from "fs";
 import { PopUpComponent } from "@/components/popUpComponent";
+import useDialog from "@/hooks/useDialog";
 
 type apiPerson = {
   person_id: string,
@@ -73,14 +74,7 @@ export default function Register() {
   const [displayErrorPage, setDisplayErrorPage] = useState<{statusCode: number, message: string} | null>(null);
 
   // ダイアログに関するstate
-  const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
-  const [currentErrorMessage, setCurrentErrorMessage] = useState<string>("");
-  const [currentImgPath, setCurrentImgPath] = useState<string>("");
-  const handleDialog = (currentErrorMessage: string, currentImgPath: string) =>  {
-    setShowErrorDialog(true);
-    setCurrentErrorMessage(currentErrorMessage);
-    setCurrentImgPath(currentImgPath);
-  }
+  const {dialogProps, openDialog} = useDialog();
 
   // 貸し借り相手の取得
   const { responsePerson, error, isLoading, mutatePersons } = usePerson();
@@ -132,12 +126,12 @@ export default function Register() {
         errorMessage = "もう一度接続してください"
         setDisplayErrorPage({statusCode: statusCode, message: errorMessage})
       } else if (error.statusCode === 404) {
-        handleDialog(
+        openDialog(
           `${deletedPersonName}は見つかりません`, 
           "/注意のアイコン.svg"
         )
       } else if (error.statusCode == 409) {
-        handleDialog(
+        openDialog(
           `${deletedPersonName}との貸し借りが精算されていないので，${deletedPersonName}の削除ができません`, 
           "/注意のアイコン.svg"
         )
@@ -164,7 +158,7 @@ export default function Register() {
         errorMessage = "もう一度接続してください"
         setDisplayErrorPage({statusCode: statusCode, message: errorMessage})
       } else if (error.statusCode === 409) {
-        handleDialog(
+        openDialog(
           `${newPersonName}は既に存在しています`, 
           "/注意のアイコン.svg"
         )
@@ -219,11 +213,7 @@ export default function Register() {
         戻る
       </Button>
 
-      <PopUpComponent isOpen={showErrorDialog}
-      onClose={() => setShowErrorDialog(false)} 
-      errorMessage={currentErrorMessage} 
-      imgPath={currentImgPath}>
-      </PopUpComponent>
+      <PopUpComponent {...dialogProps} />
     </div>
   );
 }

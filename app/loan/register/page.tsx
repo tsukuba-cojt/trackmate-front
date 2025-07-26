@@ -109,6 +109,8 @@ export default function Register() {
     try {
       await deletePorson(deletedPersonId);
       mutatePersons();
+      openDialog(`${deletedPersonName}を削除しました`, 
+            "/check_mark.svg")
     } 
     catch(error: any) {
       if (error instanceof HttpError) {
@@ -138,6 +140,7 @@ export default function Register() {
     try{
       await postPerson(newPersonName);
       mutatePersons();
+      openDialog(`${newPersonName}を追加しました`, "/check_mark.svg");
     }
     catch(error: any) {
       if (error instanceof HttpError) {

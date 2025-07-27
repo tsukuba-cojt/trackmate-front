@@ -17,6 +17,8 @@ import { Calendar } from "@/components/ui/calendar"
 
 import {v4 as uuidv4} from "uuid"
 
+import usePerson from "@/hooks/usePerson";
+
 import {
   Select,
   SelectContent,
@@ -78,25 +80,6 @@ const formSchema = z.object({
   is_debt: z.boolean()
 })
 
-const fetchPerson = async (url: string) => {
-  const token = process.env.NEXT_PUBLIC_TOKEN;
-
-  const res = await fetch(url, {
-    method: "GET", 
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
-    }
-  });
-
-  if (!res.ok) {
-    const errorData = await res.json(); 
-    throw new Error(errorData.message || 'Failed to fetch person data');
-  }
-
-  return res.json();
-}
-
 const postLoan = async (newLoan: LoanItem, selectedNames: nameItem[]) => {
   const token = process.env.NEXT_PUBLIC_TOKEN;
   const url = process.env.NEXT_PUBLIC_BASE_API_URL + "loan";
@@ -145,8 +128,8 @@ const postLoan = async (newLoan: LoanItem, selectedNames: nameItem[]) => {
 
 export default function LoanInputForm({isSelectedLend}: Props) {
   const router = useRouter();
-
-  const {data: responsePerson, error, isLoading} = useSWR<apiPerson[]>(process.env.NEXT_PUBLIC_BASE_API_URL + "person", fetchPerson);
+  const {responsePerson, error, isLoading} = usePerson();
+  
 
   const [selectedNames, setSelectedNamse] = useState<nameItem[]>([
     {id: uuidv4(), name: "やすの"}, {id: uuidv4(), name: "Astalum"}, {id: uuidv4(), name: "こまつさん"}

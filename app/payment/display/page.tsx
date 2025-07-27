@@ -1,7 +1,6 @@
 "use client"
 import Switcher from "@/components/switcher";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { useRouter } from "next/navigation";
 import useSWR from "swr";
 
 const fetcher = (url: string) => fetch(url).then(res => res.json())

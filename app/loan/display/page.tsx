@@ -1,33 +1,16 @@
 "use client"
 
+import ErrorPage from "@/components/errorPage";
 import LoanHistory from "@/components/loanDetail";
 import LoanDetail from "@/components/loanDetail";
 import Switcher from "@/components/switcher";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import useDialog from "@/hooks/useDialog";
+import useErrorPage from "@/hooks/useErrorPage";
+import useLoans from "@/hooks/useLoans";
 import { cn } from "@/lib/utils";
-import { UUID } from "crypto";
-import { decodeAction } from "next/dist/server/app-render/entry-base";
-import { useEffect, useState } from "react";
-import useSWR from 'swr';
-import { v4 as uuidv4 } from 'uuid';
-
-const fetcher = async (url: string | URL | Request) => {
-  const token = process.env.NEXT_PUBLIC_TOKEN;
-
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`, 
-    },
-  });
-  if (!response.ok) {
-    const error = new Error('An error occurred while fetching the data.');
-    throw error;
-  }
-
-  return response.json();
-}
+import { HttpError } from "@/uitls/HttpError";
+import { useRouter } from "next/navigation";
 
 export interface ApiDetail {
   date: Date, 
@@ -35,7 +18,7 @@ export interface ApiDetail {
 }
 
 export interface LoanDetail extends ApiDetail {
-  key: UUID
+  key: string
 }
 
 export interface ApiLoanObject {
@@ -47,37 +30,28 @@ export interface ApiLoanObject {
 
 export interface ClientLoanObject extends ApiLoanObject{
     isOpen: boolean,
-    key: UUID, 
+    key: string, 
 }
 
 export default function Display() {
-  const { data, error, isLoading } = useSWR<ApiLoanObject[]>('http://162.43.27.178:8000/loan', fetcher);
+  const router = useRouter();
 
-  const [loans, setLoans] = useState<ClientLoanObject[]>([])
+  const {displayErrorPage, showErrorPage} = useErrorPage();
+  const {dialogProps, openDialog} = useDialog();
 
-  useEffect(() => {
-    if (data && data.data) {
-      console.log(data.data);
-      const newLoans: ClientLoanObject[] = data.data.map((apiLoan: ApiLoanObject) => {
-        const newLonasHistory = apiLoan.history.map((detail: ApiDetail) => {
-          return ({
-            ...detail,
-            key: uuidv4()
-          }
-          );
-        });
-        return {
-          ...apiLoan,
-          history: newLonasHistory, 
-          key: uuidv4(), 
-          isOpen: false
+  const {loans, setLoans, error, isLoading} = useLoans();
+  if (error) {
+      if (error instanceof HttpError) {
+        if (error.statusCode === 401 || error.statusCode === 403) {
+          router.push("/");
         }
-      })
-      setLoans(newLoans);
+        if (error.statusCode === 500) {
+          showErrorPage(error.statusCode, "もう一度接続してください");
+        }
+      }
     }
-  }, [data, error])
 
-  const handleCardClick = (clickedKey: UUID) => {
+  const handleCardClick = (clickedKey: string) => {
     setLoans((prevLoans: ClientLoanObject[]) => {
       return prevLoans.map((prevLoan: ClientLoanObject) => {
         if (prevLoan.key === clickedKey) {
@@ -89,6 +63,16 @@ export default function Display() {
       })
     })
   }
+
+  if (displayErrorPage) {
+      return (
+        <ErrorPage
+        statusCode={displayErrorPage.statusCode} 
+        errorMessage={displayErrorPage.message}
+        >
+        </ErrorPage>
+      )
+    }
 
   return (
     <div className="flex flex-col w-full items-center justify-center">

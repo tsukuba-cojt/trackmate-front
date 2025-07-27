@@ -3,7 +3,6 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
-import { UUID } from "crypto";
 
 import {LoanDetail, ClientLoanObject} from "../../app/loan/display/page"
 

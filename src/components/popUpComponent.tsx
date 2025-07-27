@@ -26,7 +26,7 @@ export function PopUpComponent({isOpen, onClose, errorMessage, imgPath}: Props) 
         </DialogHeader>
         <DialogDescription></DialogDescription>
         <div className="flex justify-center items-center gap-2">
-          <img src={imgPath} alt="" className="w-1/4"/>
+          {imgPath && <img src={imgPath} alt="" className="w-1/4"/>}
         </div>
       </DialogContent>
     </Dialog>

@@ -4,6 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme{
+    --color-theme-50: oklch(0.9481 0.0245 265.59); /* background */
     --color-theme-100: oklch(0.8206 0.0945 236.75); /* theme */
     --color-theme-200: oklch(0.7554 0.1534 231.64); /* subtheme */
     --color-text-0: oklch(0.3211 0 0);

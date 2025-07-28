@@ -2,6 +2,41 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import TransitionButton from "@/components/transition";
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import { auth } from '../../firebase-auth'; 
+import axios from 'axios';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Terminal } from "lucide-react";
+
+const registerUser = async (email: string, password: string, displayName: string) => {
+    try {
+        // Firebase Authenticationへのユーザー登録とuidの取得
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const firebaseUid = userCredential.user.uid;
+        const registerApiUrl = 
+
+        // 登録確認メールの送信
+        await sendEmailVerification(userCredential.user);
+        <Alert variant="default">
+            <Terminal />
+            <AlertTitle>メールを送信しました!</AlertTitle>
+            <AlertDescription>
+                登録確認メールを送信しました。メール内のリンクをクリックして登録を完了してください。
+            </AlertDescription>
+        </Alert>
+
+        // backend-api(統合先)へのユーザー登録
+        await axios.post('https://your-backend-api.com/signup', {
+        firebaseUid: firebaseUid,
+        email: email,
+        name: displayName || "Unknown", 
+    });
+
+        console.log('User registered and data sent to backend');
+    } catch (error) {
+        console.error('Error during registration:', error);
+    }
+};
 
 const RegisterPage = () => {
     const router = useRouter();

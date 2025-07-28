@@ -25,7 +25,7 @@ export interface ClientLoanObject extends ApiLoanObject{
 }
 
 export default function useLoans() {
-  const { data, error, isLoading } = useSWR<ApiLoanObject[]>('http://162.43.27.178:8000/loan', fetcher);
+  const { data, error, isLoading, mutate } = useSWR<ApiLoanObject[]>(process.env.NEXT_PUBLIC_BASE_API_URL + 'loan', fetcher);
 
   const [loans, setLoans] = useState<ClientLoanObject[]>([])
 
@@ -55,6 +55,7 @@ export default function useLoans() {
     loans, 
     setLoans, 
     error,
-    isLoading
+    isLoading, 
+    mutateLoans: mutate
   }
 }

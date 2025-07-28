@@ -8,15 +8,12 @@ import {LoanDetail, ClientLoanObject} from "../../app/loan/display/page"
 
 type Props = {
   loan: ClientLoanObject, 
-  className?: string
+  className?: string, 
+  onClick: (e: React.MouseEvent, personName: string, isDebt: boolean) => void, 
 }
 
-export default function LoanHistory({loan, className}: Props) {
+export default function LoanHistory({loan, className, onClick}: Props) {
   const buttonStyle: string = "border-black font-bold border-1 px-6 py-2 text-xl mt-4";
-
-  const handleClick = () => {
-    
-  }
 
   return (
     <div className={cn(`overflow-hidden transition-all duration-300 ease-in-out flex flex-col items-center w-full ${loan.isOpen ? 'max-h-screen' : 'max-h-0'}`, className)}>
@@ -50,7 +47,7 @@ export default function LoanHistory({loan, className}: Props) {
         })}
       </div>
 
-      <Button variant={"outline"} className={buttonStyle} onClick={() => handleClick()}>清算完了</Button>
+      <Button variant={"outline"} className={buttonStyle} onClick={(e) => onClick(e, loan.person_name, loan.is_debt)}>清算完了</Button>
     </div>
   );
 }

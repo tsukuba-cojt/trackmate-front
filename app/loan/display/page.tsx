@@ -3,6 +3,7 @@
 import ErrorPage from "@/components/errorPage";
 import LoanHistory from "@/components/loanDetail";
 import LoanDetail from "@/components/loanDetail";
+import { PopUpComponent } from "@/components/popUpComponent";
 import Switcher from "@/components/switcher";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import useDialog from "@/hooks/useDialog";
@@ -33,17 +34,40 @@ export interface ClientLoanObject extends ApiLoanObject{
     key: string, 
 }
 
+const deleteLoan = async (personName: string, isDebt: boolean) => {
+  const token = process.env.NEXT_PUBLIC_TOKEN;
+  const url = process.env.NEXT_PUBLIC_BASE_API_URL + "loan"
+
+  console.log(personName);
+  console.log(isDebt);
+
+  const res = await fetch(url, {
+    method: "DELETE", 
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+    },
+    body: JSON.stringify({person_name: personName, is_debt: isDebt})
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json(); 
+    console.log(res.status);
+    throw new HttpError(errorData.message, res.status);
+  }
+}
+
 export default function Display() {
   const router = useRouter();
 
   const {displayErrorPage, showErrorPage} = useErrorPage();
   const {dialogProps, openDialog} = useDialog();
 
-  const {loans, setLoans, error, isLoading} = useLoans();
+  const {loans, setLoans, error, isLoading, mutateLoans} = useLoans();
   if (error) {
       if (error instanceof HttpError) {
         if (error.statusCode === 401 || error.statusCode === 403) {
-          router.push("/");
+          router.push("/login");
         }
         if (error.statusCode === 500) {
           showErrorPage(error.statusCode, "もう一度接続してください");
@@ -64,6 +88,33 @@ export default function Display() {
     })
   }
 
+  const handleDeleteButtonClick = async (e: React.MouseEvent, personName: string, isDebt: boolean) => {
+    e.stopPropagation();
+    try {
+      await deleteLoan(personName, isDebt);
+      mutateLoans();
+      openDialog("精算完了しました", "/check_mark.svg");
+    }
+    catch(error: any) {
+      if (error instanceof HttpError) {
+        if (error.statusCode === 401 || error.statusCode === 403) {
+          router.push("/login");
+        }
+        else if (error.statusCode === 404) {
+          openDialog("貸し借りの記録が見つかりませんでした", "/注意のマーク.svg")
+        }
+        else if (error.statusCode === 400 || error.statusCode === 500) {
+          showErrorPage(500, "もう一度接続してください");
+        } 
+        else {
+          showErrorPage(500, "もう一度接続してください");
+        }
+      } else {
+        showErrorPage(500, "もう一度接続してください");
+      }
+    }
+  }
+
   if (displayErrorPage) {
       return (
         <ErrorPage
@@ -74,7 +125,7 @@ export default function Display() {
       )
     }
 
-  return (
+  if (!isLoading && !error) return (
     <div className="flex flex-col w-full items-center justify-center">
       <div className="text-2xl font-bold my-4">
         貸し / 借り
@@ -108,13 +159,14 @@ export default function Display() {
                   <p className=" text-3xl pr-2">¥ {loan.sum_amount.toLocaleString()}</p>
                 </div>
 
-                <LoanHistory loan={loan} className=""></LoanHistory>
+                <LoanHistory loan={loan} onClick={handleDeleteButtonClick}></LoanHistory>
               </CardContent>          
             </Card>
           );
         })}
       </div>
-
+      
+      <PopUpComponent {...dialogProps}/>
     </div>
   );
 }

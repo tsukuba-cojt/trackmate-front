@@ -1,10 +1,8 @@
-import { useRouter } from "next/navigation"
 import ButtonAndInputForm from "./ButtonAndInputForm"
 import DeleteListItem from "./DeleteListItem"
 import { PopUpComponent } from "./popUpComponent"
 import { Button } from "./ui/button"
-import { ChangeEvent, useState } from "react"
-import { HttpError } from "@/uitls/HttpError"
+import { ChangeEvent} from "react"
 
 type TData = {
   id: string, 

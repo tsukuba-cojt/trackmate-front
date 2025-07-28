@@ -3,23 +3,23 @@ import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { v4 as uuidv4 } from 'uuid';
 
-export interface ApiDetail {
+export type ApiDetail = {
   date: Date, 
   amount: number, 
 }
 
-export interface LoanDetail extends ApiDetail {
+export type LoanDetail = ApiDetail & {
   key: string
 }
 
-export interface ApiLoanObject {
+export type ApiLoanObject = {
   person_name: string;
   sum_amount: number;
   is_debt: boolean;
   history: LoanDetail[];
 }
 
-export interface ClientLoanObject extends ApiLoanObject{
+export type ClientLoanObject = ApiLoanObject & {
     isOpen: boolean,
     key: string, 
 }

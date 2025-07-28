@@ -70,6 +70,11 @@ export default function Register() {
   const {displayErrorPage, showErrorPage} = useErrorPage();
   const {dialogProps, openDialog} = useDialog();
 
+  const [newName, setNewName] = useState<string>("");
+  const handleNewValuChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setNewName(e.target.value);
+  }
+
   // 貸し借り相手の取得
   const [persons, setPersons] = useState<Person[]>([]);
   const { responsePerson, error, isLoading, mutatePersons } = usePerson();
@@ -97,6 +102,71 @@ export default function Register() {
     }
   }, [responsePerson, error])
 
+  const handleClickBackButton = () => {
+    router.back();
+  }
+
+  const handleClickDeleteButton = async (deletedItemId: string) => {
+    const deletedPersonName = persons.find((person) => person.id === deletedItemId)?.name;
+
+    try {
+      await deletePorson(deletedItemId);
+      mutatePersons();
+      openDialog(`${deletedPersonName}を削除しました`, 
+            "/check_mark.svg")
+    } 
+    catch(error: any) {
+      if (error instanceof HttpError) {
+        if (error.statusCode === 401 || error.statusCode === 403) {
+          router.push("/");
+          return;
+        }
+        if (error.statusCode === 400 || error.statusCode === 500) {
+          showErrorPage(error.statusCode, "もう一度接続してください")
+        } else if (error.statusCode === 404) {
+          openDialog(`${deletedPersonName}は見つかりません`, "/注意のアイコン.svg")
+        } else if (error.statusCode == 409) {
+          openDialog(
+            `${deletedPersonName}との貸し借りが精算されていないので，${deletedPersonName}の削除ができません`, 
+            "/注意のアイコン.svg"
+          )
+        } else {
+          showErrorPage(error.statusCode, error.message)
+        }
+      } else {
+        showErrorPage(500, "予期せぬエラーが発生しました");
+      }
+    }
+  }
+
+    const handleClickAddButton = async (newPersonName: string) => {
+      try{
+        await postPerson(newPersonName);
+        mutatePersons();
+        openDialog(`${newPersonName}を追加しました`, "/check_mark.svg");
+      }
+      catch(error: any) {
+        if (error instanceof HttpError) {
+          if (error.statusCode === 401 || error.statusCode === 403) {
+            router.push("/");
+            return;
+          }
+          if (error.statusCode === 400 || error.statusCode === 500) {
+            showErrorPage(error.statusCode, "もう一度接続してください")
+          } else if (error.statusCode === 409) {
+            openDialog(
+              `${newPersonName}は既に存在しています`, 
+              "/注意のアイコン.svg"
+            )
+          } else {
+            showErrorPage(error.statusCode, error.message)
+          }
+        } else {
+          showErrorPage(500, "予期せぬエラーが発生しました");
+        }
+      }
+    }
+
   if (displayErrorPage) {
     return (
       <ErrorPage
@@ -108,14 +178,14 @@ export default function Register() {
   }
 
   if (!isLoading && !error) return (
-    <RegisterComponent
+    <RegisterComponent<Person>
     dialogProps={dialogProps}
     items={persons}
-    showErrorPage={showErrorPage}
-    openDialog= {openDialog}
-    mutatePersons= {mutatePersons}
-    postPerson={postPerson}
-    deletePorson={deletePorson}
+    newValue={newName} 
+    onChangeNewValue={handleNewValuChange} 
+    onClickBackButton={handleClickBackButton}
+    onClickDeleteButton={handleClickDeleteButton} 
+    onClickAddButton={handleClickAddButton} 
     />
   );
 }

@@ -1,3 +1,4 @@
+import Header from "./_Header"
 import ButtonAndInputForm from "./ButtonAndInputForm"
 import DeleteListItem from "./DeleteListItem"
 import { PopUpComponent } from "./popUpComponent"
@@ -38,43 +39,43 @@ export default function RegisterComponent<TItem extends TData>({
 
   const buttonStyle: string = "border-black text-2xl font-bold border-1 px-12 py-6 mb-20 bg-white";
   return (
-    <div className="flex flex-col w-full min-h-screen items-center justify-center bg-theme-50">
-      <div className="text-2xl font-bold mt-10">
-        貸した・借りた人編集
-      </div>
+    <div className="h-screen flex flex-col">
+      <Header title="貸し借り相手編集"></Header>
+      <div className="flex flex-col w-full items-center justify-center bg-theme-50 flex-grow">
 
-      <div className="flex flex-col grow items-center gap-4 w-3/4 m-15">
-        <ButtonAndInputForm
-        newValue={newValue}
-        onChange={onChangeNewValue}
-        onAddClick={onClickAddButton}
-        />
+        <div className="flex flex-col grow items-center gap-4 w-3/4 m-15">
+          <ButtonAndInputForm
+          newValue={newValue}
+          onChange={onChangeNewValue}
+          onAddClick={onClickAddButton}
+          />
 
-        {
-          items.map((item) => 
-            (
-              <DeleteListItem
-              key={item.id}
-              item={item}
-              onDelete={onClickDeleteButton}
-              renderContent={(item) => {
-                return (
-                  <>
-                    {item.name}
-                  </>
-                )
-              }
-              }
-              />
+          {
+            items.map((item) => 
+              (
+                <DeleteListItem
+                key={item.id}
+                item={item}
+                onDelete={onClickDeleteButton}
+                renderContent={(item) => {
+                  return (
+                    <>
+                      {item.name}
+                    </>
+                  )
+                }
+                }
+                />
+              )
             )
-          )
-        }
-      </div>
-      <Button variant="outline" className={buttonStyle} onClick={() => onClickBackButton()}>
-        戻る
-      </Button>
+          }
+        </div>
+        <Button variant="outline" className={buttonStyle} onClick={() => onClickBackButton()}>
+          戻る
+        </Button>
 
-      <PopUpComponent {...dialogProps} />
+        <PopUpComponent {...dialogProps} />
+      </div>
     </div>
   )
 }

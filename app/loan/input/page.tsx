@@ -161,16 +161,16 @@ export default function InputPage() {
   }
 
   if (!error && !isLoading) return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Header title="貸し借り"></Header>
-      <div className="flex flex-col w-full min-h-screen items-center bg-theme-50">
+      <div className="flex flex-col w-full items-center bg-theme-50 flex-grow">
         <Switcher
         leftText="表示"
         leftLink="/loan/display"
         rightText="入力"
         rightLink="/loan/input"
         focus="right"
-        className="my-8"
+        className="my-10"
         ></Switcher>
         <DebtRentToggleButton
         isSelectedLend={isSelectedLend}
@@ -185,6 +185,6 @@ export default function InputPage() {
 
         <PopUpComponent {...dialogProps} />
       </div>
-    </>
+    </div>
   );
 }

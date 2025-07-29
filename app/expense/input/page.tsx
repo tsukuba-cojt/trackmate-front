@@ -12,6 +12,7 @@ import useDialog from "@/hooks/useDialog";
 import { PopUpComponent } from "@/components/popUpComponent";
 import { HttpError } from "@/uitls/HttpError";
 import ErrorPage from "@/components/errorPage";
+import Header from "@/components/_Header";
 
 type FormData = {
   expense_date: string,
@@ -118,10 +119,9 @@ export default function ExpenseInputPage() {
 
   if (!error && !isLoading) {
     return (
+      <>
+      <Header title="支出"></Header>
       <form className="flex flex-col items-center h-screen bg-theme-50" onSubmit={handleSubmit}>
-        <div className="text-2xl font-bold my-4">
-          支出
-        </div>
 
         <Switcher
         leftText="表示"
@@ -166,6 +166,7 @@ export default function ExpenseInputPage() {
 
         <PopUpComponent {...dialogProps} />
       </form>
+      </>
     )
   }
 }

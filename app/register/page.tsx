@@ -18,7 +18,7 @@ const RegisterPage = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const registerApiUrl = "http://localhost:3006/api/signup"; // 開発用
+    const registerApiUrl = "http://localhost:3006/auth/signup"; // 開発用
     // const registerApiUrl = "/api/signup"; // 本番環境用
 
     const handleRegister = async (e: React.FormEvent) => {

@@ -13,11 +13,9 @@ import {
 
 function main() {
 
-    
-
     return (
         <div className="h-screen w-screen">
-            <div className="w-screen py-10 bold text-4xl text-center">支出</div>
+            <div className="w-screen py-10 extra-bold text-4xl text-center">支出</div>
                 <div className="flex justify-center mb-8">
                     <Switcher
                     leftText="表示"

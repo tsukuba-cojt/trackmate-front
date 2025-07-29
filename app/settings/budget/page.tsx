@@ -1,5 +1,6 @@
 "use client"
 
+import Header from "@/components/_Header";
 import ErrorPage from "@/components/errorPage";
 import { PopUpComponent } from "@/components/popUpComponent";
 import { Button } from "@/components/ui/button";
@@ -106,6 +107,7 @@ export default function SettingBudgetPage() {
   const buttonStyle: string = "border-black text-2xl font-bold border-1 px-12 py-6 mt-16 bg-white";
   return (
     <>
+      <Header title="予算設定"></Header>
       <form className="flex flex-col items-center gap-4 bg-theme-50 h-screen" onSubmit={(e) => handleSubmit(e)}>
         <div className="text-2xl font-bold mt-10 mb-16">
           予算設定

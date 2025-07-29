@@ -1,13 +1,12 @@
-"use client"; // クライアントコンポーネントとしてマーク
+"use client";
 
-import type React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import TransitionButton from "@/components/transition"; // 仮定: このコンポーネントは存在し、正しく動作する
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/components/auth/firebase'; // Firebase初期化ファイルのパスに合わせてください (例: src/firebase/index.js)
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"; // shadcn/ui Alertコンポーネント
-import { Terminal } from "lucide-react"; // lucide-reactのTerminalアイコン
+import TransitionButton from "@/components/transition";
+// import { signInWithEmailAndPassword } from 'firebase/auth';
+// import { auth } from '@/components/auth/firebase';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Terminal } from "lucide-react";
 
 const LoginPage = () => {
     const router = useRouter();
@@ -16,20 +15,46 @@ const LoginPage = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
+    // JWT認証のためのログイン処理
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setErrorMessage(null);
         setIsLoading(true);
 
         try {
-            // Firebase Authenticationでメールアドレスとパスワードを使ってログイン
-            await signInWithEmailAndPassword(auth, email, password);
-            console.log('ログイン成功！');
-            router.push('/loan/display');
+            // バックエンドのログインAPIエンドポイント
+            const backendApiUrl = '/auth/login';
+
+            const response = await fetch(backendApiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // ログイン成功
+                console.log('ログイン成功！');
+                // JWTトークンを保存 (例: localStorage)
+                if (data.token) {
+                    localStorage.setItem('jwt_token', data.token);
+                }
+                // ユーザーをリダイレクト
+                router.push('/loan/display');
+            } else {
+                // ログイン失敗
+                const errorDetail = data.message || '不明なエラーが発生しました。';
+                setErrorMessage(`ログインエラー: ${errorDetail}`);
+                console.error('ログイン中に問題が発生しました:', data);
+            }
         } catch (error: unknown) {
-            console.error('ログイン中に問題が発生しました:', error);
+            // ネットワークエラーなど、予期せぬエラー
+            console.error('ログイン中にネットワークまたは予期せぬエラーが発生しました:', error);
             if (error instanceof Error) {
-                setErrorMessage(`ログインエラー: ${error.message}`);
+                setErrorMessage(`ネットワークエラー: ${error.message}`);
             } else {
                 setErrorMessage('ログイン中に不明なエラーが発生しました。');
             }
@@ -59,8 +84,8 @@ const LoginPage = () => {
                             type="email"
                             id="email"
                             className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            value={email} // Controlled component
-                            onChange={(e) => setEmail(e.target.value)} // Controlled component
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             required
                         />
                     </div>
@@ -98,6 +123,6 @@ const LoginPage = () => {
             </div>
         </div>
     );
-}
+};
 
 export default LoginPage;

@@ -1,16 +1,17 @@
 "use client";
 
-import type React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import TransitionButton from "@/components/transition";
-import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { auth } from '@/components/auth/firebase';
-import axios from 'axios';
+// Firebase関連のインポートは削除
+// import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+// import { auth } from '@/components/auth/firebase';
+// Axiosのインポートは削除 (fetchを使用するため)
+// import axios from 'axios';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Terminal } from "lucide-react";
 
-const RegisterPage = () => {
+const signupPage = () => {
     const router = useRouter();
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -18,41 +19,49 @@ const RegisterPage = () => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const registerApiUrl = "http://localhost:3006/api/signup"; // 開発用
-    // const registerApiUrl = "/api/signup"; // 本番環境用
+    // バックエンドのユーザー登録APIエンドポイント
+    // 実際のバックエンドのURLに合わせて変更してください
+    const signupApiUrl = "http://localhost:3006/auth/signup"; // 開発用 (例)
+    // const signupApiUrl = "/api/signup"; // 本番環境用 (Next.js API Routesを使用する場合)
 
-    const handleRegister = async (e: React.FormEvent) => {
+    const handlesignup = async (e: React.FormEvent) => {
         e.preventDefault();
         setSuccessMessage(null);
         setErrorMessage(null);
         setIsLoading(true);
 
         try {
-            // 1. Firebase Authenticationへのユーザー登録
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const firebaseUid = userCredential.user.uid;
-
-            // 2. 登録確認メールの送信
-            // sendEmailVerificationはユーザーがログイン状態でないと失敗する可能性があるので注意
-            // 登録直後なのでuserCredential.userを使用
-            await sendEmailVerification(userCredential.user);
-            setSuccessMessage("登録確認メールを送信しました。メール内のリンクをクリックして登録を完了してください。");
-
-            // 3. バックエンドAPIへのユーザー登録情報送信
-            await axios.post(registerApiUrl, {
-                firebaseUid: firebaseUid,
-                email: email,
+            // バックエンドAPIへのユーザー登録情報送信
+            const response = await fetch(signupApiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
             });
 
-            console.log('ユーザー登録が完了し、バックエンドに情報が送信されました');
+            const data = await response.json();
 
-            // 4. 登録成功後のリダイレクト
-            router.push('/login'); // 登録後にログインページへリダイレクト
+            if (response.ok) {
+                // 登録成功
+                console.log('ユーザー登録が完了し、バックエンドに情報が送信されました');
+                setSuccessMessage("会員登録が完了しました。ログインページへ移動します。");
+                // 登録成功後、一定時間後にログインページへリダイレクト
+                setTimeout(() => {
+                    router.push('/login');
+                }, 2000); // 2秒後にリダイレクト
+            } else {
+                // 登録失敗 (バックエンドからのエラーメッセージをパース)
+                const errorDetail = data.message || '不明なエラーが発生しました。';
+                setErrorMessage(`会員登録エラー: ${errorDetail}`);
+                console.error('サインアップ中に問題が発生しました:', data);
+            }
 
         } catch (error: unknown) {
-            console.error('サインアップ中に問題が発生しました:', error);
+            // ネットワークエラーなど、予期せぬエラー
+            console.error('サインアップ中にネットワークまたは予期せぬエラーが発生しました:', error);
             if (error instanceof Error) {
-                setErrorMessage(`サインアップ中にエラーが発生しました: ${error.message}`);
+                setErrorMessage(`ネットワークエラー: ${error.message}`);
             } else {
                 setErrorMessage('サインアップ中に不明なエラーが発生しました。');
             }
@@ -69,11 +78,11 @@ const RegisterPage = () => {
                         leftText="ログイン"
                         leftLink="/login"
                         rightText="会員登録"
-                        rightLink="/register"
+                        rightLink="/signup"
                         focus="right"
                     />
                 </div>
-                <form onSubmit={handleRegister}>
+                <form onSubmit={handlesignup}>
                     <div className="mb-4">
                         <label className="block text-sm font-medium mb-2" htmlFor="email">
                             メールアドレス
@@ -96,7 +105,7 @@ const RegisterPage = () => {
                             id="password"
                             className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)} // Controlled component
+                            onChange={(e) => setPassword(e.target.value)}
                             required
                         />
                     </div>
@@ -104,9 +113,9 @@ const RegisterPage = () => {
                         <button
                             type="submit"
                             className="w-3/4 bg-theme-200 text-white mt-4 py-3 rounded hover:bg-blue-700 transition duration-200"
-                            disabled={isLoading} // 送信中はボタンを無効化
+                            disabled={isLoading}
                         >
-                            {isLoading ? '登録中...' : '会員登録'} {/* ボタンテキストを動的に変更 */}
+                            {isLoading ? '登録中...' : '会員登録'}
                         </button>
                     </div>
                 </form>
@@ -117,7 +126,6 @@ const RegisterPage = () => {
                         <Terminal className="h-4 w-4" />
                         <AlertTitle>
                             登録に成功しました!
-                            ログインページからログインしてください。
                         </AlertTitle>
                         <AlertDescription>{successMessage}</AlertDescription>
                     </Alert>
@@ -125,11 +133,10 @@ const RegisterPage = () => {
 
                 {/* エラーメッセージの表示 */}
                 {errorMessage && (
-                    <Alert variant="destructive" className="mt-4"> {/* エラー用にvariant="destructive"を使用 */}
+                    <Alert variant="destructive" className="mt-4">
                         <Terminal className="h-4 w-4" />
                         <AlertTitle>
                             登録に失敗しました。
-                            もう一度お試しください。
                         </AlertTitle>
                         <AlertDescription>{errorMessage}</AlertDescription>
                     </Alert>
@@ -139,4 +146,4 @@ const RegisterPage = () => {
     );
 };
 
-export default RegisterPage;
+export default signupPage;

@@ -153,6 +153,7 @@ export default function SettingCategoryPage() {
 
   if (!isLoading && !error) return (
     <RegisterComponent<Category>
+    headerTitle="カテゴリ編集"
     dialogProps={dialogProps}
     items={categories}
     newValue={newCategoryName} 

@@ -18,6 +18,7 @@ type DialogProps =  {
   }
 
 type Props<TItem extends TData> = {
+  headerTitle: string, 
   dialogProps: DialogProps, 
   items: TItem[], 
   newValue: string, 
@@ -28,6 +29,7 @@ type Props<TItem extends TData> = {
 }
 
 export default function RegisterComponent<TItem extends TData>({
+  headerTitle,
   dialogProps,
   items,
   newValue, 
@@ -40,7 +42,7 @@ export default function RegisterComponent<TItem extends TData>({
   const buttonStyle: string = "border-black text-2xl font-bold border-1 px-12 py-6 mb-20 bg-white";
   return (
     <div className="h-screen flex flex-col">
-      <Header title="貸し借り相手編集"></Header>
+      <Header title={headerTitle}></Header>
       <div className="flex flex-col w-full items-center justify-center bg-theme-50 flex-grow">
 
         <div className="flex flex-col grow items-center gap-4 w-3/4 m-15">

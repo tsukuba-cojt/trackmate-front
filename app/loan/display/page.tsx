@@ -1,5 +1,6 @@
 "use client"
 
+import Header from "@/components/_Header";
 import ErrorPage from "@/components/errorPage";
 import LoanHistory from "@/components/loanDetail";
 import LoanDetail from "@/components/loanDetail";
@@ -126,47 +127,46 @@ export default function Display() {
     }
 
   if (!isLoading && !error) return (
-    <div className="flex flex-col w-full items-center justify-center">
-      <div className="text-2xl font-bold my-4">
-        貸し / 借り
+    <>
+      <Header title="貸し借り"></Header>
+      <div className="flex flex-col w-full items-center justify-center">
+        <Switcher
+        leftText="表示"
+        leftLink="/loan/display"
+        rightText="入力"
+        rightLink="/loan/input"
+        focus="left"
+        className="my-10"
+        ></Switcher>
+
+        <div className="flex w-full flex-col justify-center items-center gap-4">
+          {loans.map((loan) => {
+            // 合計金額を表示
+            return (
+              <Card 
+                className="w-4/5 rounded-3xl py-6"
+                key={loan.key}
+                onClick={() => handleCardClick(loan.key)}
+              >
+                <CardContent>
+                  <div className="font-bold text-xl">{loan.person_name}</div>
+
+                  <div className={cn("flex flex-row w-full items-center justify-between", loan.isOpen && "mb-4")}>
+                    <p className={loan.is_debt? "pl-2 font-bold text-2xl text-theme-200": "pl-2 font-bold text-2xl text-red-400"}>
+                      {loan.is_debt? '貸し': '借り'}
+                    </p>
+                    <p className=" text-3xl pr-2">¥ {loan.sum_amount.toLocaleString()}</p>
+                  </div>
+
+                  <LoanHistory loan={loan} onClick={handleDeleteButtonClick}></LoanHistory>
+                </CardContent>          
+              </Card>
+            );
+          })}
+        </div>
+        
+        <PopUpComponent {...dialogProps}/>
       </div>
-
-      <Switcher
-      leftText="表示"
-      leftLink="/loan/display"
-      rightText="入力"
-      rightLink="/loan/input"
-      focus="left"
-      className="my-10"
-      ></Switcher>
-
-      <div className="flex w-full flex-col justify-center items-center gap-4">
-        {loans.map((loan) => {
-          // 合計金額を表示
-          return (
-            <Card 
-              className="w-4/5 rounded-3xl py-6"
-              key={loan.key}
-              onClick={() => handleCardClick(loan.key)}
-            >
-              <CardContent>
-                <div className="font-bold text-xl">{loan.person_name}</div>
-
-                <div className={cn("flex flex-row w-full items-center justify-between", loan.isOpen && "mb-4")}>
-                  <p className={loan.is_debt? "pl-2 font-bold text-2xl text-theme-200": "pl-2 font-bold text-2xl text-red-400"}>
-                    {loan.is_debt? '貸し': '借り'}
-                  </p>
-                  <p className=" text-3xl pr-2">¥ {loan.sum_amount.toLocaleString()}</p>
-                </div>
-
-                <LoanHistory loan={loan} onClick={handleDeleteButtonClick}></LoanHistory>
-              </CardContent>          
-            </Card>
-          );
-        })}
-      </div>
-      
-      <PopUpComponent {...dialogProps}/>
-    </div>
+    </>
   );
 }

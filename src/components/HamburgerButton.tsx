@@ -34,7 +34,7 @@ export default function HamburgerButton({ onClick }: HamburgerButtonProps) {
         
     return (
         <div className="flex">
-            <Button onClick={onClick} className="absolute bg-gray-200 pt-8 pl-4 w-16 h-16">
+            <Button onClick={onClick} className="absolute bg-gray-white shadow-none pt-8 pl-4 w-16 h-16">
                 <HamburgerIcon style={{ width: "40px", height: "40px" }} color={"black"}/>
             </Button>
         </div>

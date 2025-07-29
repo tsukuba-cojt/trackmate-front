@@ -26,13 +26,11 @@ export default function Header({ title }: HeaderProps) {
     <div>
       {/* ハンバーガーボタン */}
       <HamburgerButton onClick={toggleSidebar} />
-
       {/* サイドバーコンポーネント */}
       <Sidebar isOpen={isSidebarOpen} onOpenChange={setIsSidebarOpen} />
-
       {/* ヘッダーのタイトル部分 */}
       {/* items-center に修正し、適切なスタイリングを追加 */}
-      <div className="h-24 w-full flex items-center justify-end pr-8 pl-28 bg-white shadow-sm">
+      <div className="h-24 w-full flex items-center justify-center bg-white shadow-sm">
         <h2 className="text-xl font-bold text-gray-800">{title}</h2>
       </div>
     </div>

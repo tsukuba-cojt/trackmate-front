@@ -182,9 +182,8 @@ export default function InputPage() {
         selectedNames={selectedNames}
         onSubmit={onSubmit}
         ></LoanInputForm>
-
-        <PopUpComponent {...dialogProps} />
       </div>
+      <PopUpComponent {...dialogProps} />
     </div>
   );
 }

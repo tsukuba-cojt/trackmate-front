@@ -1,5 +1,6 @@
 import Switcher from "@/components/switcher";
 import TransitionButton from "@/components/transition";
+import axios from 'axios';
 import {
     Card,
     CardAction,
@@ -11,6 +12,9 @@ import {
 } from "@/components/ui/card"
 
 function main() {
+
+    
+
     return (
         <div className="h-screen w-screen">
             <div className="w-screen py-10 bold text-4xl text-center">支出</div>

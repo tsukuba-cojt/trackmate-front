@@ -1,0 +1,45 @@
+[debug] [2025-07-28T17:30:14.720Z] ----------------------------------------------------------------------
+[debug] [2025-07-28T17:30:14.724Z] Command:       /home/astalum/.nvm/versions/node/v23.7.0/bin/node /home/astalum/.nvm/versions/node/v23.7.0/bin/firebase init
+[debug] [2025-07-28T17:30:14.724Z] CLI Version:   14.11.1
+[debug] [2025-07-28T17:30:14.725Z] Platform:      linux
+[debug] [2025-07-28T17:30:14.725Z] Node Version:  v23.7.0
+[debug] [2025-07-28T17:30:14.725Z] Time:          Tue Jul 29 2025 02:30:14 GMT+0900 (Japan Standard Time)
+[debug] [2025-07-28T17:30:14.726Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-07-28T17:30:15.081Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-07-28T17:30:15.081Z] > authorizing via signed-in user (taguchiakihiro2004@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  /home/astalum/cojt/trackmate-front
+
+Before we get started, keep in mind:
+
+  * You are initializing within an existing Firebase project directory
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2025-07-28T17:30:37.890Z] Using project from CLI flag: friendyeats-codelab
+[debug] [2025-07-28T17:30:37.894Z] Checked if tokens are valid: true, expires at: 1753724844744
+[debug] [2025-07-28T17:30:37.894Z] Checked if tokens are valid: true, expires at: 1753724844744
+[debug] [2025-07-28T17:30:37.898Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/friendyeats-codelab [none]
+[debug] [2025-07-28T17:30:38.603Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/friendyeats-codelab 403
+[debug] [2025-07-28T17:30:38.604Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/friendyeats-codelab {"error":{"code":403,"message":"The caller does not have permission","status":"PERMISSION_DENIED"}}
+[debug] [2025-07-28T17:30:38.605Z] Request to https://firebase.googleapis.com/v1beta1/projects/friendyeats-codelab had HTTP Error: 403, The caller does not have permission
+[debug] [2025-07-28T17:30:38.788Z] FirebaseError: Request to https://firebase.googleapis.com/v1beta1/projects/friendyeats-codelab had HTTP Error: 403, The caller does not have permission
+    at responseToError (/home/astalum/.nvm/versions/node/v23.7.0/lib/node_modules/firebase-tools/lib/responseToError.js:52:12)
+    at RetryOperation._fn (/home/astalum/.nvm/versions/node/v23.7.0/lib/node_modules/firebase-tools/lib/apiv2.js:312:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+[error] 
+[error] Error: Failed to get Firebase project friendyeats-codelab. Please make sure the project exists and your account has permission to access it.

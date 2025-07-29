@@ -11,18 +11,33 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 
-function main() {
+async function main() {
+
+    const token = process.env.NEXT_PUBLIC_TOKEN;
+    const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}expenses`;
+    const res = await fetch(url, {
+        method: "GET", 
+        headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+            
+        })
+    });
+    
+
 
     return (
         <div className="h-screen w-screen">
             <div className="w-screen py-10 extra-bold text-4xl text-center">支出</div>
                 <div className="flex justify-center mb-8">
                     <Switcher
-                    leftText="表示"
-                    leftLink="/expense/display"
-                    rightText="入力"
-                    rightLink="/expense/input"
-                    focus="left"
+                        leftText="表示"
+                        leftLink="/expense/display"
+                        rightText="入力"
+                        rightLink="/expense/input"
+                        focus="left"
                     />
                 </div>
                 <div className="flex items-center justify-center">
@@ -80,7 +95,7 @@ function main() {
                     </div>
                 </div>
             <div>
-                <transitionButton
+                <TransitionButton
                     leftText="カテゴリ別"
                     leftLink="/category"
                     rightText="予測グラフ"

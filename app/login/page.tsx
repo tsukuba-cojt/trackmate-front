@@ -1,13 +1,13 @@
-"use client"; // クライアントコンポーネントとしてマーク
+"use client";
 
 import type React from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import TransitionButton from "@/components/transition"; // 仮定: このコンポーネントは存在し、正しく動作する
+import TransitionButton from "@/components/transition";
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/components/auth/firebase'; // Firebase初期化ファイルのパスに合わせてください (例: src/firebase/index.js)
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"; // shadcn/ui Alertコンポーネント
-import { Terminal } from "lucide-react"; // lucide-reactのTerminalアイコン
+import { auth } from '@/components/auth/firebase';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Terminal } from "lucide-react";
 
 const LoginPage = () => {
     const router = useRouter();

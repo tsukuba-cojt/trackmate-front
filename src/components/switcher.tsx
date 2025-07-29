@@ -1,3 +1,4 @@
+"use client";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
@@ -17,6 +18,7 @@ const Switcher = ({ leftText, leftLink, rightText, rightLink, focus, className }
     return(
     <div className={cn("w-3/4", className)}>
         <Button
+        type="button"
         variant={focus === "left" ? "ghost" : "link"}
         className={`w-1/2 border-b-2 ${focus === "left" ? "border-focus-100 text-focus-100" : "border-focus-200 text-focus-200"} shadow-none rounded-none mb-4 font-bold text-xl`}
         onClick={() => {
@@ -27,6 +29,7 @@ const Switcher = ({ leftText, leftLink, rightText, rightLink, focus, className }
         {leftText}
         </Button>
         <Button
+        type="button"
         variant={focus === "right" ? "ghost" : "link"}
         className={`w-1/2 border-b-2 ${focus === "right" ? "border-focus-100 text-focus-100" : "border-focus-200 text-focus-200"} shadow-none rounded-none mb-4 font-bold text-xl`}
         onClick={() => {

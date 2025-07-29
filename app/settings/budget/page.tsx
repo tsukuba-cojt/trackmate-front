@@ -1,5 +1,6 @@
 "use client"
 
+import Header from "@/components/_Header";
 import ErrorPage from "@/components/errorPage";
 import { PopUpComponent } from "@/components/popUpComponent";
 import { Button } from "@/components/ui/button";
@@ -105,13 +106,10 @@ export default function SettingBudgetPage() {
 
   const buttonStyle: string = "border-black text-2xl font-bold border-1 px-12 py-6 mt-16 bg-white";
   return (
-    <>
-      <form className="flex flex-col items-center gap-4 bg-theme-50 h-screen" onSubmit={(e) => handleSubmit(e)}>
-        <div className="text-2xl font-bold mt-10 mb-16">
-          予算設定
-        </div>
-
-        <div className="flex justify-center items-center gap-2 w-3/4 text-xl font-bold">
+    <div className="flex flex-col min-h-screen">
+      <Header title="予算設定"></Header>
+      <form className="flex flex-col items-center gap-4 bg-theme-50 flex-grow" onSubmit={(e) => handleSubmit(e)}>
+        <div className="flex justify-center items-center gap-2 w-3/4 text-xl font-bold mt-16">
           <p>年月</p>
           <Select onValueChange={setSelectedYear} value={selectedYear}>
             <SelectTrigger id="year" className="w-[100px] text-center text-xl font-normal bg-white">
@@ -156,7 +154,7 @@ export default function SettingBudgetPage() {
       </form>
 
       <PopUpComponent {...dialogProps} />
-    </>
+    </div>
     
 
     

@@ -175,6 +175,7 @@ export default function Register() {
 
   if (!isLoading && !error) return (
     <RegisterComponent<Person>
+    headerTitle="貸し借り相手編集"
     dialogProps={dialogProps}
     items={persons}
     newValue={newName} 

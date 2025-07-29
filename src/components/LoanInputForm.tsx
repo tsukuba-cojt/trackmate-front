@@ -79,7 +79,7 @@ export default function LoanInputForm({isSelectedLend, selectedNames, onSubmit}:
   })
 
   const handleRegisterButtonClick = () => {
-    const redirectTo: string = "/loan/register";
+    const redirectTo: string = "/settings/partners";
     router.push(redirectTo);
   }
 

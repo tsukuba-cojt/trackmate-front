@@ -12,6 +12,7 @@ import useDialog from "@/hooks/useDialog";
 import ErrorPage from "@/components/errorPage";
 import { PopUpComponent } from "@/components/popUpComponent";
 import { z } from "zod"
+import Header from "@/components/_Header";
 
 type NameItem = {
   id: string,
@@ -160,29 +161,28 @@ export default function InputPage() {
   }
 
   if (!error && !isLoading) return (
-    <div className="flex flex-col w-full min-h-screen items-center bg-theme-50">
-      <div className="text-2xl font-bold my-4">
-        貸し / 借り
+    <div className="flex flex-col min-h-screen">
+      <Header title="貸し借り"></Header>
+      <div className="flex flex-col w-full items-center bg-theme-50 flex-grow">
+        <Switcher
+        leftText="表示"
+        leftLink="/loan/display"
+        rightText="入力"
+        rightLink="/loan/input"
+        focus="right"
+        className="my-10"
+        ></Switcher>
+        <DebtRentToggleButton
+        isSelectedLend={isSelectedLend}
+        setIsSelectedLend={setIsSelectedLend}
+        className="mb-15"
+        ></DebtRentToggleButton>
+        <LoanInputForm
+        isSelectedLend={isSelectedLend}
+        selectedNames={selectedNames}
+        onSubmit={onSubmit}
+        ></LoanInputForm>
       </div>
-      <Switcher
-      leftText="表示"
-      leftLink="/loan/display"
-      rightText="入力"
-      rightLink="/loan/input"
-      focus="right"
-      className="my-8"
-      ></Switcher>
-      <DebtRentToggleButton
-      isSelectedLend={isSelectedLend}
-      setIsSelectedLend={setIsSelectedLend}
-      className="mb-15"
-      ></DebtRentToggleButton>
-      <LoanInputForm
-      isSelectedLend={isSelectedLend}
-      selectedNames={selectedNames}
-      onSubmit={onSubmit}
-      ></LoanInputForm>
-
       <PopUpComponent {...dialogProps} />
     </div>
   );

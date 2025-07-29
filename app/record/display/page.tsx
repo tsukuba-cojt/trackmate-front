@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { ChevronDownIcon } from "lucide-react"
 import { PopUpComponent } from "@/components/popUpComponent";
+import Header from "@/components/_Header";
 
 export type ExpenseDetail = {
   id: string, 
@@ -99,63 +100,61 @@ export default function SettingExpensesPage() {
 
   const buttonStyle: string = "border-black text-2xl font-bold border-1 px-12 py-6 mt-16 bg-white";
   if (!error && !isLoading) return (
-    <div className="flex flex-col w-full h-screen items-center bg-theme-50">
-      <div className="text-2xl font-bold mt-10 mb-16">
-        支出記録確認
-      </div>
+    <div className="flex flex-col min-h-screen">
+      <Header title="支出記録"></Header>
+      <div className="flex flex-col w-full items-center bg-theme-50 flex-grow">
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              id="date"
+              className="w-48 justify-between font-normal mt-16"
+            >
+              {date ? date.toLocaleDateString() : "日付選択"}
+              <ChevronDownIcon />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={date}
+              captionLayout="dropdown"
+              onSelect={(date) => {
+                console.log(date);
+                setDate(date)
+                setOpen(false)
+                mutateExpenseDetails();
+              }}
+            />
+          </PopoverContent>
+        </Popover>
 
-
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            id="date"
-            className="w-48 justify-between font-normal"
-          >
-            {date ? date.toLocaleDateString() : "日付選択"}
-            <ChevronDownIcon />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-          <Calendar
-            mode="single"
-            selected={date}
-            captionLayout="dropdown"
-            onSelect={(date) => {
-              console.log(date);
-              setDate(date)
-              setOpen(false)
-              mutateExpenseDetails();
-            }}
-          />
-        </PopoverContent>
-      </Popover>
-
-      <div className="flex flex-col grow items-center gap-4 w-3/4 m-15">
-        {
-          expenseDetails.map((expenseDetail) => 
-            (
-              <DeleteListItem
-              key={expenseDetail.id}
-              item={expenseDetail}
-              onDelete={handleClickDeleteButton}
-              renderContent={(item) => {
-                return (
-                  <div className="flex justify-between px-0 pl-4">
-                    <p className="pl-2">{expenseDetail.expenseCategoryName}</p>
-                    <p>{expenseDetail.expenseAmount}円</p>
-                  </div>
-                )
-              }
-              }
-              />
+        <div className="flex flex-col grow items-center gap-4 w-3/4 mt-15">
+          {
+            expenseDetails.map((expenseDetail) => 
+              (
+                <DeleteListItem
+                key={expenseDetail.id}
+                item={expenseDetail}
+                onDelete={handleClickDeleteButton}
+                renderContent={(item) => {
+                  return (
+                    <div className="flex justify-between px-0 pl-4">
+                      <p className="pl-2">{expenseDetail.expenseCategoryName}</p>
+                      <p>{expenseDetail.expenseAmount}円</p>
+                    </div>
+                  )
+                }
+                }
+                />
+              )
             )
-          )
-        }
-        <PopUpComponent
-        {...dialogProps}
-        ></PopUpComponent>
+          }
+        </div>
       </div>
+      <PopUpComponent
+          {...dialogProps}
+          ></PopUpComponent>
     </div>
   )
 }

@@ -127,9 +127,9 @@ export default function Display() {
     }
 
   if (!isLoading && !error) return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Header title="貸し借り"></Header>
-      <div className="flex flex-col w-full items-center justify-center">
+      <div className="flex flex-col w-full items-center flex-grow bg-theme-50">
         <Switcher
         leftText="表示"
         leftLink="/loan/display"
@@ -167,6 +167,6 @@ export default function Display() {
         
         <PopUpComponent {...dialogProps}/>
       </div>
-    </>
+    </div>
   );
 }

@@ -46,7 +46,6 @@ export default function LoanHistory({loan, className, onClick}: Props) {
           );
         })}
       </div>
-
       <Button variant={"outline"} className={buttonStyle} onClick={(e) => onClick(e, loan.person_name, loan.is_debt)}>清算完了</Button>
     </div>
   );

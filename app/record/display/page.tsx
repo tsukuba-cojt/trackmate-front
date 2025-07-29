@@ -100,9 +100,9 @@ export default function SettingExpensesPage() {
 
   const buttonStyle: string = "border-black text-2xl font-bold border-1 px-12 py-6 mt-16 bg-white";
   if (!error && !isLoading) return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Header title="支出記録"></Header>
-      <div className="flex flex-col w-full h-screen items-center bg-theme-50">
+      <div className="flex flex-col w-full items-center bg-theme-50 flex-grow">
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
@@ -129,7 +129,7 @@ export default function SettingExpensesPage() {
           </PopoverContent>
         </Popover>
 
-        <div className="flex flex-col grow items-center gap-4 w-3/4 m-15">
+        <div className="flex flex-col grow items-center gap-4 w-3/4 mt-15">
           {
             expenseDetails.map((expenseDetail) => 
               (
@@ -150,11 +150,11 @@ export default function SettingExpensesPage() {
               )
             )
           }
-          <PopUpComponent
-          {...dialogProps}
-          ></PopUpComponent>
         </div>
       </div>
-    </>
+      <PopUpComponent
+          {...dialogProps}
+          ></PopUpComponent>
+    </div>
   )
 }

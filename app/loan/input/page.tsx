@@ -166,7 +166,7 @@ export default function InputPage() {
       </div>
       <Switcher
       leftText="表示"
-      leftLink="loan/display"
+      leftLink="/loan/display"
       rightText="入力"
       rightLink="/loan/input"
       focus="right"

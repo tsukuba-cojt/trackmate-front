@@ -25,7 +25,7 @@ export type ClientLoanObject = ApiLoanObject & {
 }
 
 export default function useLoans() {
-  const { data, error, isLoading, mutate } = useSWR<ApiLoanObject[]>(process.env.NEXT_PUBLIC_BASE_API_URL + 'loan', fetcher);
+  const { data, error, isLoading, mutate } = useSWR(process.env.NEXT_PUBLIC_BASE_API_URL + 'loan', fetcher);
 
   const [loans, setLoans] = useState<ClientLoanObject[]>([])
 

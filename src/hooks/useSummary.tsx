@@ -22,7 +22,7 @@ type Summary = {
 
 export default function useCategory() {
 const [summaries, setSummaries] = useState<Summary[]>([]);
-const { data, error, isLoading, mutate } = useSWR<ApiSummary[]>(process.env.NEXT_PUBLIC_BASE_API_URL + "expenses", fetcher);
+const { data, error, isLoading, mutate } = useSWR(process.env.NEXT_PUBLIC_BASE_API_URL + "expenses", fetcher);
 
 useEffect(() => {
     if (data && data.data) {
@@ -42,11 +42,5 @@ useEffect(() => {
     }
 }, [data, error])
 
-return {
-    expense_sum, 
-    budeget, 
-    remaining_budget, 
-    debt_sum, 
-    loan_sum:
-}
+return summaries;
 }

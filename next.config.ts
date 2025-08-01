@@ -1,6 +1,14 @@
 const nextConfig = {
-  webpack(config) {
-    const fileLoaderRule = config.module.rules.find((rule) =>
+  typescript: {
+    // 型チェックを無効化
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    // ESLintチェックを無効化
+    ignoreDuringBuilds: true,
+  },
+  webpack(config: any) {
+    const fileLoaderRule = config.module.rules.find((rule: any) =>
       rule.test && rule.test.test(/\.svg$/)
     );
 

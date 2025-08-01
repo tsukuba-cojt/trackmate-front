@@ -23,7 +23,9 @@ const LoginPage = () => {
 
         try {
             // バックエンドのログインAPIエンドポイント
-            const backendApiUrl = '/auth/login';
+            // const backendApiUrl = 'http://localhost:3401/auth/login';
+            // const backendApiUrl = 'http://mast23mc.net/auth/login';
+            const backendApiUrl = 'http://mast23mc.net/api/auth/login';
 
             const response = await fetch(backendApiUrl, {
                 method: 'POST',

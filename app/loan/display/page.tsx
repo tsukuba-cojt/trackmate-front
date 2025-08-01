@@ -13,6 +13,7 @@ import useLoans from "@/hooks/useLoans";
 import { cn } from "@/lib/utils";
 import { HttpError } from "@/uitls/HttpError";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export type ApiDetail = {
   date: Date, 
@@ -65,7 +66,7 @@ export default function Display() {
   const {dialogProps, openDialog} = useDialog();
 
   const {loans, setLoans, error, isLoading, mutateLoans} = useLoans();
-  if (error) {
+  useEffect(() => {if (error) {
       if (error instanceof HttpError) {
         if (error.statusCode === 401 || error.statusCode === 403) {
           router.push("/login");
@@ -75,7 +76,8 @@ export default function Display() {
         }
       }
     }
-
+  }, [error]);
+  
   const handleCardClick = (clickedKey: string) => {
     setLoans((prevLoans: ClientLoanObject[]) => {
       return prevLoans.map((prevLoan: ClientLoanObject) => {

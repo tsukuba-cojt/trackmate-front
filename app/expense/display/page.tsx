@@ -1,6 +1,8 @@
+// 静的生成を無効化
+export const dynamic = 'force-dynamic';
+
 import Switcher from "@/components/switcher";
 import TransitionButton from "@/components/transition";
-import axios from 'axios';
 import {
     Card,
     CardAction,
@@ -14,16 +16,13 @@ import {
 async function main() {
 
     const token = process.env.NEXT_PUBLIC_TOKEN;
-    const url = `${process.env.NEXT_PUBLIC_BASE_API_URL}expenses`;
+    const url = process.env.NEXT_PUBLIC_BASE_API_URL+'expenses';
     const res = await fetch(url, {
         method: "GET", 
         headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify({
-            
-        })
     });
     
 

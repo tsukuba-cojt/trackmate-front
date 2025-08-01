@@ -21,7 +21,7 @@ const signupPage = () => {
 
     // バックエンドのユーザー登録APIエンドポイント
     // 実際のバックエンドのURLに合わせて変更してください
-    const signupApiUrl = "http://localhost:3006/auth/signup"; // 開発用 (例)
+    const signupApiUrl = "http://localhost:3401/auth/signup"; // 開発用 (例)
     // const signupApiUrl = "/api/signup"; // 本番環境用 (Next.js API Routesを使用する場合)
 
     const handlesignup = async (e: React.FormEvent) => {

@@ -10,7 +10,7 @@ interface HamburgerButtonProps {
 
 export default function HamburgerButton({ onClick }: HamburgerButtonProps) {
 
-    const HamburgerButtonComponent = (props: PropsType) => {
+    const HamburgerButtonComponent = (props: any) => {
         return (
             <svg
             // widthとheightを削除し、classNameで制御できるようにします

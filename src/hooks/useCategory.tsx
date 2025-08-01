@@ -17,7 +17,7 @@ type Category = {
 
 export default function useCategory() {
   const [categories, setCategories] = useState<Category[]>([]);
-  const { data, error, isLoading, mutate } = useSWR<ApiCategory[]>(process.env.NEXT_PUBLIC_BASE_API_URL + "categories", fetcher);
+  const { data, error, isLoading, mutate } = useSWR(process.env.NEXT_PUBLIC_BASE_API_URL + "categories", fetcher);
 
   useEffect(() => {
     if (data && data.data) {

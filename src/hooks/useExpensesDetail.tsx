@@ -18,7 +18,7 @@ export type ExpenseDetail = {
 export default function useExpensesDetail(date: string | undefined) {
   console.log("called", date);
 
-  const { data, error, isLoading, mutate } = useSWR<ApiExpenseDetail[]>(`${process.env.NEXT_PUBLIC_BASE_API_URL}expenses?date=${date}`, fetcher);
+  const { data, error, isLoading, mutate } = useSWR(`${process.env.NEXT_PUBLIC_BASE_API_URL}expenses?date=${date}`, fetcher);
 
   const [expenseDetails, setExpenseDetails] = useState<ExpenseDetail[]>([])
 

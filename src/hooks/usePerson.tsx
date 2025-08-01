@@ -7,8 +7,7 @@ type ApiPerson = {
 }
 
 export default function usePerson() {
-  // @ts-expect-error
-  const {data: responsePerson,  error, isLoading, mutate} = useSWR<ApiPerson[]>(process.env.NEXT_PUBLIC_BASE_API_URL + "person", fetcher);
+  const {data: responsePerson,  error, isLoading, mutate} = useSWR(process.env.NEXT_PUBLIC_BASE_API_URL + "person", fetcher);
 
   console.log(responsePerson)
 

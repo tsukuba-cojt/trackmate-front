@@ -1,5 +1,8 @@
 "use client"
 
+// 静的生成を無効化
+export const dynamic = 'force-dynamic';
+
 import Header from "@/components/_Header";
 import ErrorPage from "@/components/errorPage";
 import { PopUpComponent } from "@/components/popUpComponent";
